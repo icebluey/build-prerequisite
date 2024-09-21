@@ -15,7 +15,7 @@ docker exec ub2204 /bin/bash -c '/bin/rm -fr /tmp/*'
 docker cp ub2204 ub2204:/home/
 docker exec ub2204 /bin/bash /home/ub2204/scripts/pre-install.txt
 docker exec ub2204 /bin/bash /home/ub2204/scripts/.build-all.sh
-rm -fr /home/.tmp
+/bin/rm -fr /home/.tmp
 mkdir /home/.tmp
 docker cp ub2204:/tmp/bintar /home/.tmp/
 cd /home/.tmp
@@ -25,4 +25,5 @@ sleep 1
 tar -cvf bintar-ub2204-"v${_dateutc}".tar bintar-ub2204-"v${_dateutc}"
 sleep 1
 sha256sum bintar-ub2204-"v${_dateutc}".tar > bintar-ub2204-"v${_dateutc}".tar.sha256
+/bin/rm -fr bintar-ub2204-"v${_dateutc}"
 exit
