@@ -30,6 +30,6 @@ jobs:
           _dateutc=$(date -u +%Y-%m-%d-%H%M)
           _repo="$(echo ${{ github.repository }} | awk -F '/' '{print $2}')"
           sudo /bin/ls -lah /home/.tmp/
-          sudo /bin/ls -1 /home/.tmp/ 2>/dev/null | xargs --no-run-if-empty -I '{}' sudo /bin/bash scripts/.upload_file_to_github-release.sh --token ${{ secrets.GITHUB_TOKEN }} --user "${{ github.repository_owner }}" --repo "${_repo}" --file "{}" --tag "v${_dateutc}"
+          sudo /bin/ls -1 /home/.tmp/*.tar* 2>/dev/null | xargs --no-run-if-empty -I '{}' sudo /bin/bash scripts/.upload_file_to_github-release.sh --token ${{ secrets.GITHUB_TOKEN }} --user "${{ github.repository_owner }}" --repo "${_repo}" --file "{}" --tag "v${_dateutc}"
           sleep 2
           sudo /bin/rm -fr /home/.tmp
