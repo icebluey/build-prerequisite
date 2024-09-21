@@ -340,7 +340,8 @@ echo
 _build_chrony () {
 
 LDFLAGS=''
-LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,/usr/lib/x86_64-linux-gnu/chrony/private'
+#LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,/usr/lib/x86_64-linux-gnu/chrony/private'
+LDFLAGS="${_ORIG_LDFLAGS}"
 export LDFLAGS
 
 /sbin/ldconfig
@@ -507,6 +508,9 @@ mkdir -p /var/lib/chrony
 touch /var/lib/chrony/{drift,rtc}
 /bin/systemctl daemon-reload >/dev/null 2>&1 || : 
 ' > etc/chrony/.install.txt
+
+patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/sbin/chronyd
+patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/bin/chronyc
 
 chown -R root:root ./
 echo
