@@ -1,0 +1,4 @@
+
+1 22 * * * /bin/systemctl stop nginx.service >/dev/null 2>&1 ; /bin/sleep 3 ; /bin/systemctl start nginx.service >/dev/null 2>&1
+5 22 * * * /usr/libexec/chrony/resolve-ntp-servers.sh >/dev/null 2>&1 ; /bin/systemctl stop chronyd.service >/dev/null 2>&1 ; /bin/sleep 5 ; /bin/systemctl start chronyd.service >/dev/null 2>&1 ; /bin/sleep 5 ; /usr/bin/chronyc -n sources -v >/dev/null 2>&1 ; /bin/sleep 300 ; /usr/bin/chronyc makestep >/dev/null 2>&1
+
