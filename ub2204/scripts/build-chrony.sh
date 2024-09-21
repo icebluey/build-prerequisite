@@ -433,8 +433,8 @@ sed '18i#server time2.google.com iburst minpoll 4 maxpoll 5' -i etc/chrony/chron
 sed '19i#server time3.google.com iburst minpoll 4 maxpoll 5' -i etc/chrony/chrony.conf
 sed '20i#server time4.google.com iburst minpoll 4 maxpoll 5\n' -i etc/chrony/chrony.conf
 
-echo 'ntsrefresh 60' >> etc/chrony/chrony.conf
-echo 'refresh 60' >> etc/chrony/chrony.conf
+echo 'ntsrefresh 300' >> etc/chrony/chrony.conf
+echo 'refresh 300' >> etc/chrony/chrony.conf
 
 sed 's|^ProcSubset|#ProcSubset|g' -i etc/chrony/chronyd.service
 sed 's|^ProtectProc|#ProtectProc|g' -i etc/chrony/chronyd.service
