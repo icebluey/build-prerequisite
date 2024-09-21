@@ -20,7 +20,9 @@ mkdir /home/.tmp
 docker cp ub2204:/tmp/bintar /home/.tmp/
 cd /home/.tmp
 _dateutc=$(date -u +%Y-%m-%d-%H%M)
+mv -f bintar bintar-ub2204-"v${_dateutc}"
+sleep 1
 tar -cvf bintar-ub2204-"v${_dateutc}".tar bintar-ub2204-"v${_dateutc}"
-sleep 2
+sleep 1
 sha256sum bintar-ub2204-"v${_dateutc}".tar > bintar-ub2204-"v${_dateutc}".tar.sha256
 exit
