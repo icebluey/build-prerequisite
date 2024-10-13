@@ -15,10 +15,9 @@ docker exec ub2204 /bin/bash -c '/bin/rm -fr /tmp/*'
 docker cp ub2204 ub2204:/home/
 docker exec ub2204 /bin/bash /home/ub2204/scripts/pre-install.txt
 docker exec ub2204 /bin/bash /home/ub2204/scripts/.build-all.sh
-/bin/rm -fr /home/.tmp
-mkdir /home/.tmp
-docker cp ub2204:/tmp/bintar /home/.tmp/
-cd /home/.tmp
+mkdir -p /tmp/_output_assets
+docker cp ub2204:/tmp/bintar /tmp/_output_assets/
+cd /tmp/_output_assets
 _dateutc=$(date -u +%Y-%m-%d-%H%M)
 mv -f bintar bintar-ub2204-"v${_dateutc}"
 sleep 1
