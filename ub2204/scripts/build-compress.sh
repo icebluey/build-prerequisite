@@ -42,7 +42,7 @@ sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
 sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 sleep 1
-make -j2 V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
 rm -fr /tmp/lz4
 rm -fr /tmp/lz4*.tar*
 make install DESTDIR=/tmp/lz4
@@ -81,7 +81,7 @@ sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
 sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 sleep 1
-make -j2 V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
 rm -fr /tmp/zstd
 rm -fr /tmp/zstd*.tar*
 make install DESTDIR=/tmp/zstd
@@ -117,7 +117,7 @@ cd "tar-${_tar_ver}"
 --with-zstd=/usr/bin/zstd \
 --with-gzip=/bin/gzip \
 --with-bzip2=/bin/bzip2
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/tar
 rm -fr /tmp/tar*.tar*
 make install DESTDIR=/tmp/tar
