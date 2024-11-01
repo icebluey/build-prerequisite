@@ -89,7 +89,7 @@ _build_libedit() {
     --enable-shared --enable-static \
     --enable-widec
     sleep 1
-    make -j2 all
+    make -j$(nproc) all
     rm -fr /tmp/libedit
     make install DESTDIR=/tmp/libedit
     cd /tmp/libedit
@@ -124,7 +124,7 @@ _build_libseccomp() {
     --libdir=/usr/lib/x86_64-linux-gnu --libexecdir=/usr/libexec --localstatedir=/var \
     --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info \
     --enable-shared --enable-static
-    make -j2 all
+    make -j$(nproc) all
     rm -fr /tmp/libseccomp
     make DESTDIR=/tmp/libseccomp install
     cd /tmp/libseccomp
@@ -177,7 +177,7 @@ sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 
 sleep 1
 #make V=1 all prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
-make -j2 V=1 lib prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc) V=1 lib prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
 sleep 1
 rm -fr /tmp/zstd
 sleep 1
@@ -245,7 +245,7 @@ if [[ -f bootstrap ]]; then
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --disable-static \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make -j2 all
+    make -j$(nproc) all
     rm -fr /tmp/brotli
     make install DESTDIR=/tmp/brotli
 else
@@ -330,7 +330,7 @@ cd nettle-*
 --includedir=/usr/include --sysconfdir=/etc \
 --enable-shared --enable-static --enable-fat
 
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/nettle
 make install DESTDIR=/tmp/nettle
 
@@ -413,7 +413,7 @@ find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -Wl,-rpath -Wl,/usr/li
 sleep 1
 find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -R/usr/lib/x86_64-linux-gnu||g' -i "{}"
 sleep 1
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/gnutls
 make install DESTDIR=/tmp/gnutls
 
@@ -487,7 +487,7 @@ cd chrony-*
 --with-hwclockfile=/etc/adjtime \
 --with-pidfile=/run/chrony/chronyd.pid
 
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/chrony
 make install DESTDIR=/tmp/chrony
 mkdir -p /tmp/chrony/etc/logrotate.d
