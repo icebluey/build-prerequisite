@@ -261,6 +261,11 @@ cd gnupg-*
 --docdir=/usr/share/doc/gnupg2
 
 make -j$(nproc) all
+
+# for v2.4.6
+sed 's|gpgv\.1|gpgv2.1|g' -i doc/Makefile
+sed 's|gpg\.1|gpg2.1|g' -i doc/Makefile
+
 rm -fr /tmp/gnupg
 make install DESTDIR=/tmp/gnupg
 
