@@ -11,6 +11,8 @@ export CXX
 
 /sbin/ldconfig
 
+_private_dir='usr/lib/x86_64-linux-gnu/openssh/private'
+
 set -e
 
 _strip_files() {
@@ -71,8 +73,8 @@ _build_zlib() {
     make DESTDIR=/tmp/zlib install
     cd /tmp/zlib
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/openssh/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/openssh/private/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.so*
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.a
     sleep 2
@@ -81,6 +83,95 @@ _build_zlib() {
     cd /tmp
     rm -fr "${_tmp_dir}"
     rm -fr /tmp/zlib
+    /sbin/ldconfig
+}
+
+_build_brotli() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    git clone --recursive 'https://github.com/google/brotli.git' brotli
+    cd brotli
+    rm -fr .git
+    if [[ -f bootstrap ]]; then
+        ./bootstrap
+        rm -fr autom4te.cache
+        LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+        ./configure \
+        --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+        --enable-shared --disable-static \
+        --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
+        make -j$(nproc) all
+        rm -fr /tmp/brotli
+        make install DESTDIR=/tmp/brotli
+    else
+        LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$ORIGIN' ; export LDFLAGS
+        cmake \
+        -S "." \
+        -B "build" \
+        -DCMAKE_BUILD_TYPE='Release' \
+        -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+        -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+        -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
+        -DLIB_INSTALL_DIR:PATH=/usr/lib/x86_64-linux-gnu \
+        -DSYSCONF_INSTALL_DIR:PATH=/etc \
+        -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
+        -DLIB_SUFFIX=64 \
+        -DBUILD_SHARED_LIBS:BOOL=ON \
+        -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
+        cmake --build "build"  --verbose
+        rm -fr /tmp/brotli
+        DESTDIR="/tmp/brotli" cmake --install "build"
+    fi
+    cd /tmp/brotli
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/brotli
+    /sbin/ldconfig
+}
+
+_build_zstd() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    git clone --recursive "https://github.com/facebook/zstd.git"
+    cd zstd
+    rm -fr .git
+    sed '/^PREFIX/s|= .*|= /usr|g' -i Makefile
+    sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i Makefile
+    sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
+    sed '/^PREFIX/s|= .*|= /usr|g' -i lib/Makefile
+    sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i lib/Makefile
+    sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
+    sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
+    #sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
+    #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
+    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN' ; export LDFLAGS
+    make -j$(nproc) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+    rm -fr /tmp/zstd
+    make install DESTDIR=/tmp/zstd
+    cd /tmp/zstd
+    _strip_files
+    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/zstd
     /sbin/ldconfig
 }
 
@@ -127,8 +218,8 @@ _build_openssl33() {
     install -c -m 0644 usr/include/openssl/opensslconf.h usr/include/x86_64-linux-gnu/openssl/
     sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/openssh/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/openssh/private/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     rm -fr /usr/include/openssl
     rm -fr /usr/include/x86_64-linux-gnu/openssl
     rm -fr /usr/local/openssl-1.1.1
@@ -183,8 +274,8 @@ _build_openssl34() {
     install -c -m 0644 usr/include/openssl/opensslconf.h usr/include/x86_64-linux-gnu/openssl/
     sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/openssh/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/openssh/private/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     rm -fr /usr/include/openssl
     rm -fr /usr/include/x86_64-linux-gnu/openssl
     rm -fr /usr/local/openssl-1.1.1
@@ -219,8 +310,8 @@ _install_fido2 () {
     cd /tmp/libfido2
     sleep 1
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/openssh/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/openssh/private/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     rm -f /usr/lib/x86_64-linux-gnu/libfido2.*
     rm -f /usr/include/fido.h
     rm -fr /usr/include/fido
@@ -235,6 +326,8 @@ _install_fido2 () {
 
 rm -fr /usr/lib/x86_64-linux-gnu/openssh/private
 _build_zlib
+_build_brotli
+_build_zstd
 #_build_openssl33
 _build_openssl34
 _install_fido2
