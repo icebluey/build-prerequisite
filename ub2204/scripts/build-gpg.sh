@@ -89,7 +89,7 @@ rm -f *.tar*
 
 cd libgpg-error-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/libgpg-error
 make install DESTDIR=/tmp/libgpg-error
 cd /tmp/libgpg-error
@@ -115,7 +115,7 @@ cd "${_tmp_dir}"
 rm -fr libgpg-error-*
 cd libassuan-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/libassuan
 make install DESTDIR=/tmp/libassuan
 cd /tmp/libassuan
@@ -136,7 +136,7 @@ cd "${_tmp_dir}"
 rm -fr libassuan-*
 cd libksba-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/libksba
 make install DESTDIR=/tmp/libksba
 cd /tmp/libksba
@@ -160,7 +160,7 @@ cd npth-*
 --enable-shared --enable-static \
 --enable-install-npth-config \
 --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/npth
 make install DESTDIR=/tmp/npth
 cd /tmp/npth
@@ -182,7 +182,7 @@ cd "${_tmp_dir}"
 rm -fr npth-*
 cd libgcrypt-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/libgcrypt
 make install DESTDIR=/tmp/libgcrypt
 cd /tmp/libgcrypt
@@ -203,7 +203,7 @@ cd "${_tmp_dir}"
 rm -fr libgcrypt-*
 cd ntbtls-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/ntbtls
 make install DESTDIR=/tmp/ntbtls
 cd /tmp/ntbtls
@@ -224,7 +224,7 @@ cd "${_tmp_dir}"
 rm -fr ntbtls-*
 cd pinentry-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/pinentry
 make install DESTDIR=/tmp/pinentry
 cd /tmp/pinentry
@@ -260,7 +260,7 @@ cd gnupg-*
 --localstatedir=/var \
 --docdir=/usr/share/doc/gnupg2
 
-make -j2 all
+make -j$(nproc) all
 rm -fr /tmp/gnupg
 make install DESTDIR=/tmp/gnupg
 
