@@ -283,6 +283,7 @@ echo '# gpg2 ssh authenticate
 [[ -d ~/.gnupg ]] || ( gpg2 --list-secret-keys >/dev/null 2>&1 || : )
 gpgconf --launch gpg-agent >/dev/null 2>&1
 export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+# fix "gpg: problem with the agent: Inappropriate ioctl for device"
 export GPG_TTY="$(tty)"
 echo UPDATESTARTUPTTY | gpg-connect-agent >/dev/null 2>&1
 # required for gpgv1
