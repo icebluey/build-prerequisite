@@ -4,6 +4,10 @@ TZ='UTC'; export TZ
 
 umask 022
 
+LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now'
+export LDFLAGS
+_ORIG_LDFLAGS="${LDFLAGS}"
+
 CC=gcc
 export CC
 CXX=g++
@@ -11,38 +15,131 @@ export CXX
 
 /sbin/ldconfig
 
-_strip_all_files() {
-    rm -fr /tmp/strip.fs.tmp.sh
-    if [[ -d usr/sbin ]]; then
-        file usr/sbin/* | grep ' ELF ' | awk '{print $1}' | sed 's|:||g' | sort | uniq | sed 's|^|/usr/bin/strip |g' > /tmp/strip.fs.tmp.sh
-    fi
-    if [[ -d usr/bin ]]; then
-        file usr/bin/* | grep ' ELF ' | awk '{print $1}' | sed 's|:||g' | sort | uniq | sed 's|^|/usr/bin/strip |g' >> /tmp/strip.fs.tmp.sh
-    fi
-    if [[ -d usr/lib/gnupg2 ]]; then
-        file usr/lib/gnupg2/* | grep ' ELF ' | awk '{print $1}' | sed 's|:||g' | sort | uniq | sed 's|^|/usr/bin/strip |g' >> /tmp/strip.fs.tmp.sh
-    fi
-    sleep 1
-    [ -f /tmp/strip.fs.tmp.sh ] && bash /tmp/strip.fs.tmp.sh
-    sleep 1
-    rm -f /tmp/strip.fs.tmp.sh
 
-    if [[ -d usr/lib/x86_64-linux-gnu ]]; then
-        find usr/lib/x86_64-linux-gnu/ -iname 'lib*.so*' -type f -exec /usr/bin/strip "{}" \;
-        find usr/lib/x86_64-linux-gnu/ -iname '*.so' -type f -exec /usr/bin/strip "{}" \;
+_private_dir='usr/lib/x86_64-linux-gnu/gnupg/private'
+
+set -e
+
+_strip_files() {
+    if [[ "$(pwd)" = '/' ]]; then
+        echo
+        printf '\e[01;31m%s\e[m\n' "Current dir is '/'"
+        printf '\e[01;31m%s\e[m\n' "quit"
+        echo
+        exit 1
+    else
+        rm -fr lib64
+        rm -fr lib
+        chown -R root:root ./
     fi
+    find usr/ -type f -iname '*.la' -delete
     if [[ -d usr/share/man ]]; then
         find -L usr/share/man/ -type l -exec rm -f '{}' \;
+        sleep 2
         find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
         sleep 2
         find -L usr/share/man/ -type l | while read file; do ln -svf "$(readlink -s "${file}").gz" "${file}.gz" ; done
         sleep 2
         find -L usr/share/man/ -type l -exec rm -f '{}' \;
     fi
-    find usr/ -type f -iname '*.la' -delete
+    if [[ -d usr/lib/x86_64-linux-gnu ]]; then
+        find usr/lib/x86_64-linux-gnu/ -type f \( -iname '*.so' -or -iname '*.so.*' \) | xargs --no-run-if-empty -I '{}' chmod 0755 '{}'
+        find usr/lib/x86_64-linux-gnu/ -iname 'lib*.so*' -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+        find usr/lib/x86_64-linux-gnu/ -iname '*.so' -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+    fi
+    if [[ -d usr/lib64 ]]; then
+        find usr/lib64/ -type f \( -iname '*.so' -or -iname '*.so.*' \) | xargs --no-run-if-empty -I '{}' chmod 0755 '{}'
+        find usr/lib64/ -iname 'lib*.so*' -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+        find usr/lib64/ -iname '*.so' -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+    fi
+    if [[ -d usr/sbin ]]; then
+        find usr/sbin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+    fi
+    if [[ -d usr/bin ]]; then
+        find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
+    fi
+    echo
 }
 
-set -e
+_build_libedit() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _libedit_ver="$(wget -qO- 'https://www.thrysoee.dk/editline/' | grep libedit-[1-9].*\.tar | sed 's|"|\n|g' | grep '^libedit-[1-9]' | sed -e 's|\.tar.*||g' -e 's|libedit-||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 9 -T 9 "https://www.thrysoee.dk/editline/libedit-${_libedit_ver}.tar.gz"
+    tar -xof libedit-*.tar.*
+    sleep 1
+    rm -f libedit-*.tar*
+    cd libedit-*
+    sed -i "s/lncurses/ltinfo/" configure
+    #LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu \
+    --host=x86_64-linux-gnu \
+    --prefix=/usr \
+    --libdir=/usr/lib/x86_64-linux-gnu \
+    --includedir=/usr/include \
+    --sysconfdir=/etc \
+    --enable-shared --enable-static \
+    --enable-widec
+    sleep 1
+    make -j$(nproc) all
+    rm -fr /tmp/libedit
+    make install DESTDIR=/tmp/libedit
+    cd /tmp/libedit
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    rm -f /usr/lib/x86_64-linux-gnu/libedit.*
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/libedit
+    /sbin/ldconfig
+}
+
+_build_sqlite() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _sqlite_path="$(wget -qO- 'https://www.sqlite.org/download.html' | grep -i '202[4-9]/sqlite-autoconf-[1-9]' | sed 's|,|\n|g' | grep -i '^202[4-9]/sqlite-autoconf-[1-9]')"
+    wget -c -t 9 -T 9 "https://www.sqlite.org/${_sqlite_path}"
+    tar -xof sqlite-*.tar*
+    sleep 1
+    rm -f sqlite-*.tar*
+    cd sqlite-*
+    #LDFLAGS='' ; LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+    --enable-shared --enable-static \
+    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc \
+    --enable-editline --enable-dynamic-extensions --enable-static-shell \
+    --enable-fts5 --enable-fts4 --enable-math --enable-rtree
+    make -j$(nproc --all) all
+    rm -fr /tmp/sqlite
+    make install DESTDIR=/tmp/sqlite
+    cd /tmp/sqlite
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    rm -f /usr/lib/x86_64-linux-gnu/libsqlite3.*
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/sqlite
+    /sbin/ldconfig
+}
+
+_build_libedit
+_build_sqlite
+
+###############################################################################
 
 _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
@@ -87,9 +184,11 @@ rm -f *.tar*
 #gnupg-2.4.1
 #gpgme-1.20.0
 
+###############################################################################
+
 cd libgpg-error-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/libgpg-error
 make install DESTDIR=/tmp/libgpg-error
 cd /tmp/libgpg-error
@@ -99,7 +198,9 @@ mv -v -f usr/include/gpgrt.h usr/include/x86_64-linux-gnu/
 ln -svf x86_64-linux-gnu/gpg-error.h usr/include/gpg-error.h
 ln -svf x86_64-linux-gnu/gpgrt.h usr/include/gpgrt.h
 _libgpg_error_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/gpg-error.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"libgpg-error_${_libgpg_error_ver}-1_amd64.tar.xz" *
@@ -115,12 +216,14 @@ cd "${_tmp_dir}"
 rm -fr libgpg-error-*
 cd libassuan-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/libassuan
 make install DESTDIR=/tmp/libassuan
 cd /tmp/libassuan
 _libassuan_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/libassuan.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"libassuan-${_libassuan_ver}-1_amd64.tar.xz" *
@@ -136,12 +239,14 @@ cd "${_tmp_dir}"
 rm -fr libassuan-*
 cd libksba-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/libksba
 make install DESTDIR=/tmp/libksba
 cd /tmp/libksba
 _libksba_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/ksba.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"libksba-${_libksba_ver}-1_amd64.tar.xz" *
@@ -160,13 +265,15 @@ cd npth-*
 --enable-shared --enable-static \
 --enable-install-npth-config \
 --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/npth
 make install DESTDIR=/tmp/npth
 cd /tmp/npth
 #_npth_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/npth.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
 _npth_ver="$(usr/bin/npth-config --version | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"npth-${_npth_ver}-1_amd64.tar.xz" *
@@ -182,12 +289,14 @@ cd "${_tmp_dir}"
 rm -fr npth-*
 cd libgcrypt-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/libgcrypt
 make install DESTDIR=/tmp/libgcrypt
 cd /tmp/libgcrypt
 _libgcrypt_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/libgcrypt.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"libgcrypt-${_libgcrypt_ver}-1_amd64.tar.xz" *
@@ -203,12 +312,14 @@ cd "${_tmp_dir}"
 rm -fr libgcrypt-*
 cd ntbtls-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/ntbtls
 make install DESTDIR=/tmp/ntbtls
 cd /tmp/ntbtls
 _ntbtls_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/ntbtls.pc | grep -i '^Version' | awk '{print $NF}' | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"ntbtls-${_ntbtls_ver}-1_amd64.tar.xz" *
@@ -224,12 +335,14 @@ cd "${_tmp_dir}"
 rm -fr ntbtls-*
 cd pinentry-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/pinentry
 make install DESTDIR=/tmp/pinentry
 cd /tmp/pinentry
 _pinentry_ver="$(usr/bin/pinentry --version 2>&1 | grep -i '^pinentry.*[0-9]$' | awk '{print $NF}'  | tr -d '\n')"
-_strip_all_files
+_strip_files
+install -m 0755 -d "${_private_dir}"
+cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"pinentry-${_pinentry_ver}-1_amd64.tar.xz" *
@@ -260,7 +373,7 @@ cd gnupg-*
 --localstatedir=/var \
 --docdir=/usr/share/doc/gnupg2
 
-make -j$(nproc) all
+make -j$(nproc --all) all
 
 # for v2.4.6
 sed 's|gpgv\.1|gpgv2.1|g' -i doc/Makefile
@@ -287,7 +400,7 @@ export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 export GPG_TTY="$(tty)"
 echo UPDATESTARTUPTTY | gpg-connect-agent >/dev/null 2>&1
 # required for gpgv1
-export GPG_AGENT_INFO="$(gpgconf --list-dirs agent-socket):0:1"    
+export GPG_AGENT_INFO="$(gpgconf --list-dirs agent-socket):0:1"
 # create sshcontrol file in ~/.gnupg/
 [[ -f ~/.gnupg/sshcontrol ]] || ( ssh-add -L >/dev/null 2>&1 || : )
 # "gpg: agent_genkey failed: Permission denied"
@@ -340,7 +453,25 @@ chmod 0644 etc/gnupg/gpg-agent.conf
 chmod 0644 etc/gnupg/.install.txt
 
 _gpg_ver="$(./usr/bin/gpg2 --version 2>&1 | grep -i '^gpg (GnuPG)' | awk '{print $3}')"
-_strip_all_files
+
+_strip_files
+
+find /usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' \
+  | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN' '{}'
+
+install -m 0755 -d usr/lib/x86_64-linux-gnu/gnupg
+cp -afr /"${_private_dir}" usr/lib/x86_64-linux-gnu/gnupg/
+
+if [[ -d usr/sbin ]]; then
+    find usr/sbin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/gnupg/private' '{}'
+fi
+if [[ -d usr/bin ]]; then
+    find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/gnupg/private' '{}'
+fi
+if [[ -d usr/lib/gnupg ]]; then
+    find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../../lib/x86_64-linux-gnu/gnupg/private' '{}'
+fi
+
 sleep 1
 ln -svf gpg2.1.gz usr/share/man/man1/gpg.1.gz
 ln -svf gpgv2.1.gz usr/share/man/man1/gpgv.1.gz
