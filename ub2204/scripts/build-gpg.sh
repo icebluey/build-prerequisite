@@ -342,8 +342,6 @@ make install DESTDIR=/tmp/pinentry
 cd /tmp/pinentry
 _pinentry_ver="$(usr/bin/pinentry --version 2>&1 | grep -i '^pinentry.*[0-9]$' | awk '{print $NF}'  | tr -d '\n')"
 _strip_files
-install -m 0755 -d "${_private_dir}"
-cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
 echo
 sleep 2
 tar -Jcvf /tmp/"pinentry-${_pinentry_ver}-1_amd64.tar.xz" *
