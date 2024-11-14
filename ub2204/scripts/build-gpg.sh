@@ -113,6 +113,7 @@ _build_sqlite() {
     rm -f sqlite-*.tar*
     cd sqlite-*
     #LDFLAGS='' ; LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    sed 's|http://|https://|g' -i configure shell.c sqlite3.1 sqlite3.c sqlite3.h sqlite3.rc
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
