@@ -4,6 +4,10 @@ TZ='UTC'; export TZ
 
 umask 022
 
+LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now'
+export LDFLAGS
+_ORIG_LDFLAGS="${LDFLAGS}"
+
 CC=gcc
 export CC
 CXX=g++
