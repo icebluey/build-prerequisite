@@ -161,6 +161,10 @@ _libgpg_error_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/gpg-error.pc | grep 
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"libgpg-error_${_libgpg_error_ver}-1_amd64.tar.xz" *
@@ -170,10 +174,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libgpg-error
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr libgpg-error-*
+###############################################################################
+
 cd libassuan-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
 make -j$(nproc --all) all
@@ -184,6 +188,10 @@ _libassuan_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/libassuan.pc | grep -i 
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"libassuan-${_libassuan_ver}-1_amd64.tar.xz" *
@@ -193,10 +201,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libassuan
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr libassuan-*
+###############################################################################
+
 cd libksba-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
 make -j$(nproc --all) all
@@ -207,6 +215,10 @@ _libksba_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/ksba.pc | grep -i '^Versi
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"libksba-${_libksba_ver}-1_amd64.tar.xz" *
@@ -216,10 +228,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libksba
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr libksba-*
+###############################################################################
+
 cd npth-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
 --enable-shared --enable-static \
@@ -234,6 +246,10 @@ _npth_ver="$(usr/bin/npth-config --version | tr -d '\n')"
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"npth-${_npth_ver}-1_amd64.tar.xz" *
@@ -243,10 +259,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/npth
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr npth-*
+###############################################################################
+
 cd libgcrypt-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
 make -j$(nproc --all) all
@@ -257,6 +273,10 @@ _libgcrypt_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/libgcrypt.pc | grep -i 
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"libgcrypt-${_libgcrypt_ver}-1_amd64.tar.xz" *
@@ -266,10 +286,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libgcrypt
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr libgcrypt-*
+###############################################################################
+
 cd ntbtls-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
 make -j$(nproc --all) all
@@ -280,6 +300,10 @@ _ntbtls_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/ntbtls.pc | grep -i '^Vers
 _strip_files
 install -m 0755 -d "${_private_dir}"
 cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+sleep 2
+/bin/cp -afr * /
+sleep 2
+rm -vfr usr/lib/x86_64-linux-gnu/gnupg
 echo
 sleep 2
 tar -Jcvf /tmp/"ntbtls-${_ntbtls_ver}-1_amd64.tar.xz" *
@@ -289,10 +313,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/ntbtls
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr ntbtls-*
+###############################################################################
+
 cd pinentry-*
 ./configure --build=x86_64-linux-gnu --host=x86_64-linux-gnu --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
 make -j$(nproc --all) all
@@ -310,10 +334,10 @@ ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/pinentry
 /sbin/ldconfig
-
-###############################################################################
 cd "${_tmp_dir}"
 rm -fr pinentry-*
+###############################################################################
+
 cd gnupg-*
 ./configure \
 --build=x86_64-linux-gnu \
