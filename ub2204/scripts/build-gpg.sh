@@ -490,7 +490,11 @@ rm -fr /tmp/gnupg
 ###############################################################################
 cd /tmp
 rm -fr "${_tmp_dir}"
-sleep 2
+
+rm -vf /usr/lib/x86_64-linux-gnu/libedit.a /usr/lib/x86_64-linux-gnu/libedit.so*
+rm -vf /usr/lib/x86_64-linux-gnu/libsqlite3.a /usr/lib/x86_64-linux-gnu/libsqlite3.so*
+apt install -y --reinstall libsqlite3-dev libsqlite3-0 libedit-dev libedit2
+
 echo
 echo ' build gpg done'
 echo ' build gpg done' >> /tmp/.done.txt
