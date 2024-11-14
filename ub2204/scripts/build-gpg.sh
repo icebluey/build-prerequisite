@@ -170,7 +170,6 @@ sleep 2
 tar -Jcvf /tmp/"libgpg-error_${_libgpg_error_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libgpg-error
 /sbin/ldconfig
@@ -197,7 +196,6 @@ sleep 2
 tar -Jcvf /tmp/"libassuan-${_libassuan_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libassuan
 /sbin/ldconfig
@@ -224,7 +222,6 @@ sleep 2
 tar -Jcvf /tmp/"libksba-${_libksba_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libksba
 /sbin/ldconfig
@@ -255,7 +252,6 @@ sleep 2
 tar -Jcvf /tmp/"npth-${_npth_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/npth
 /sbin/ldconfig
@@ -282,7 +278,6 @@ sleep 2
 tar -Jcvf /tmp/"libgcrypt-${_libgcrypt_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/libgcrypt
 /sbin/ldconfig
@@ -309,7 +304,6 @@ sleep 2
 tar -Jcvf /tmp/"ntbtls-${_ntbtls_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/ntbtls
 /sbin/ldconfig
@@ -325,12 +319,13 @@ make install DESTDIR=/tmp/pinentry
 cd /tmp/pinentry
 _pinentry_ver="$(usr/bin/pinentry --version 2>&1 | grep -i '^pinentry.*[0-9]$' | awk '{print $NF}'  | tr -d '\n')"
 _strip_files
+sleep 2
+/bin/cp -afr * /
 echo
 sleep 2
 tar -Jcvf /tmp/"pinentry-${_pinentry_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/pinentry
 /sbin/ldconfig
@@ -462,10 +457,11 @@ ln -svf gpgv2 usr/bin/gpgv
 [ -f usr/sbin/gpg-zip ] && mv -f usr/sbin/gpg-zip usr/bin/
 echo
 sleep 2
+/bin/cp -afr * /
+sleep 2
 tar -Jcvf /tmp/"gnupg-${_gpg_ver}-1_amd64.tar.xz" *
 echo
 sleep 2
-ls -1 /tmp/*_amd64.tar.xz | xargs -I "{}" tar -xof "{}" -C /
 cd /tmp
 rm -fr /tmp/gnupg
 /sbin/ldconfig
