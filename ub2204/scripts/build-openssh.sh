@@ -124,7 +124,7 @@ _build_brotli() {
         -DLIB_SUFFIX=64 \
         -DBUILD_SHARED_LIBS:BOOL=ON \
         -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
-        cmake --build "build"  --verbose
+        cmake --build "build" --parallel $(nproc --all) --verbose
         rm -fr /tmp/brotli
         DESTDIR="/tmp/brotli" cmake --install "build"
     fi
@@ -162,7 +162,9 @@ _build_zstd() {
     sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
     #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
     LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN' ; export LDFLAGS
-    make -j$(nproc) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+    make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"; export LDFLAGS
+    make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
     rm -fr /tmp/zstd
     make install DESTDIR=/tmp/zstd
     cd /tmp/zstd
