@@ -23,6 +23,8 @@ export CXX
 
 /sbin/ldconfig
 
+_private_dir='usr/lib/x86_64-linux-gnu/chrony/private'
+
 set -e
 
 _strip_files() {
@@ -66,8 +68,45 @@ _strip_files() {
     echo
 }
 
+_build_libseccomp() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    wget -c -t 9 -T 9 "https://github.com/seccomp/libseccomp/releases/download/v2.5.5/libseccomp-2.5.5.tar.gz"
+    tar -xof libseccomp-*.tar*
+    sleep 1
+    rm -f libseccomp-*.tar*
+    cd libseccomp-*
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu \
+    --host=x86_64-linux-gnu \
+    --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin \
+    --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include \
+    --libdir=/usr/lib/x86_64-linux-gnu --libexecdir=/usr/libexec --localstatedir=/var \
+    --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info \
+    --enable-shared --enable-static
+    make -j$(nproc --all) all
+    rm -fr /tmp/libseccomp
+    make DESTDIR=/tmp/libseccomp install
+    cd /tmp/libseccomp
+    _strip_files
+    install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
+    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
+    rm -vf /usr/lib/x86_64-linux-gnu/libseccomp.a
+    rm -vf /usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.[1234]
+    sleep 1
+    /bin/cp -afr * /
+    sleep 1
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/libseccomp
+    /sbin/ldconfig
+}
+
 _build_libedit() {
-    /sbin/ldconfig >/dev/null 2>&1
+    /sbin/ldconfig
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
@@ -89,370 +128,200 @@ _build_libedit() {
     --enable-shared --enable-static \
     --enable-widec
     sleep 1
-    make -j$(nproc) all
+    make -j$(nproc --all) all
     rm -fr /tmp/libedit
     make install DESTDIR=/tmp/libedit
     cd /tmp/libedit
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     rm -f /usr/lib/x86_64-linux-gnu/libedit.*
-    sleep 2
+    sleep 1
     /bin/cp -afr * /
-    sleep 2
+    sleep 1
     cd /tmp
     rm -fr "${_tmp_dir}"
     rm -fr /tmp/libedit
     /sbin/ldconfig
 }
 
-_build_libseccomp() {
+_build_brotli() {
+    /sbin/ldconfig
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    wget -c -t 9 -T 9 "https://github.com/seccomp/libseccomp/releases/download/v2.5.5/libseccomp-2.5.5.tar.gz"
-    tar -xof libseccomp-*.tar*
-    sleep 1
-    rm -f libseccomp-*.tar*
-    cd libseccomp-*
-    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
-    ./configure \
-    --build=x86_64-linux-gnu \
-    --host=x86_64-linux-gnu \
-    --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin \
-    --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include \
-    --libdir=/usr/lib/x86_64-linux-gnu --libexecdir=/usr/libexec --localstatedir=/var \
-    --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info \
-    --enable-shared --enable-static
-    make -j$(nproc) all
-    rm -fr /tmp/libseccomp
-    make DESTDIR=/tmp/libseccomp install
-    cd /tmp/libseccomp
+    git clone 'https://github.com/google/brotli.git' brotli
+    cd brotli
+    rm -fr .git
+    if [[ -f bootstrap ]]; then
+        ./bootstrap
+        rm -fr autom4te.cache
+        LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
+        ./configure \
+        --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+        --enable-shared --disable-static \
+        --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
+        make -j$(nproc --all) all
+        rm -fr /tmp/brotli
+        make install DESTDIR=/tmp/brotli
+    else
+        LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$ORIGIN'; export LDFLAGS
+        cmake \
+        -S "." \
+        -B "build" \
+        -DCMAKE_BUILD_TYPE='Release' \
+        -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+        -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+        -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
+        -DLIB_INSTALL_DIR:PATH=/usr/lib/x86_64-linux-gnu \
+        -DSYSCONF_INSTALL_DIR:PATH=/etc \
+        -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
+        -DLIB_SUFFIX=64 \
+        -DBUILD_SHARED_LIBS:BOOL=ON \
+        -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
+        cmake --build "build" --parallel $(nproc --all) --verbose
+        rm -fr /tmp/brotli
+        DESTDIR="/tmp/brotli" cmake --install "build"
+    fi
+    cd /tmp/brotli
     _strip_files
-    install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
-    cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
-    rm -vf /usr/lib/x86_64-linux-gnu/libseccomp.a
-    rm -vf /usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.[1234]
-    sleep 2
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 1
     /bin/cp -afr * /
-    sleep 2
+    sleep 1
     cd /tmp
     rm -fr "${_tmp_dir}"
-    rm -fr /tmp/libseccomp
+    rm -fr /tmp/brotli
     /sbin/ldconfig
 }
 
 _build_zstd() {
-/sbin/ldconfig
-set -e
-_tmp_dir="$(mktemp -d)"
-cd "${_tmp_dir}"
-
-#https://github.com/facebook/zstd.git
-git clone "https://github.com/facebook/zstd.git"
-sleep 1
-cd zstd
-
-#find ./ -iname Makefile | xargs -I "{}" sed 's@prefix.*?= /usr/local@prefix      ?= /usr@g' -i "{}"
-#sed '/^libdir/s|)/lib$|)/lib/x86_64-linux-gnu|g' -i lib/Makefile
-#sed 's@LIBDIR.*?= $(exec_prefix)/lib$@LIBDIR      ?= $(exec_prefix)/lib/x86_64-linux-gnu@'  -i lib/Makefile
-sed '/^PREFIX/s|= .*|= /usr|g' -i Makefile
-sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
-sed '/^prefix/s|= .*|= /usr|g' -i Makefile
-sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
-sed '/^PREFIX/s|= .*|= /usr|g' -i lib/Makefile
-sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
-sed '/^prefix/s|= .*|= /usr|g' -i lib/Makefile
-sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
-sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
-#sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
-sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
-#sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
-
-LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN'; export LDFLAGS
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
-LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"; export LDFLAGS
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
-
-rm -fr /tmp/zstd
-sleep 1
-make install DESTDIR=/tmp/zstd
-sleep 1
-cd /tmp/zstd/
-_zstd_ver="$(cat usr/lib/x86_64-linux-gnu/pkgconfig/libzstd.pc | grep '^Version: ' | awk '{print $NF}')"
-sed 's|http:|https:|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/libzstd.pc
-find usr/ -type f -iname '*.la' -delete
-if [[ -d usr/share/man ]]; then
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-    find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
-    sleep 2
-    find -L usr/share/man/ -type l | while read file; do ln -svf "$(readlink -s "${file}").gz" "${file}.gz" ; done
-    sleep 2
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-fi
-find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so.*' -exec chmod 0755 '{}' \;
-sleep 2
-find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-find usr/lib/x86_64-linux-gnu/ -type f -iname 'lib*.so.*' -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-
-find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
-sleep 1
-install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
-sleep 1
-cp -a usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
-
-echo
-sleep 2
-tar -Jcvf /tmp/"zstd-${_zstd_ver}-1.el7.x86_64.tar.xz" *
-echo
-sleep 2
-tar -xof /tmp/"zstd-${_zstd_ver}-1.el7.x86_64.tar.xz" -C /
-
-cd /tmp
-rm -fr "${_tmp_dir}"
-rm -fr /tmp/zstd
-rm -fr /tmp/zstd*tar*
-printf '\033[01;32m%s\033[m\n' '  build zstd done'
-/sbin/ldconfig
-echo
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    git clone --recursive "https://github.com/facebook/zstd.git"
+    cd zstd
+    rm -fr .git
+    sed '/^PREFIX/s|= .*|= /usr|g' -i Makefile
+    sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i Makefile
+    sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
+    sed '/^PREFIX/s|= .*|= /usr|g' -i lib/Makefile
+    sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i lib/Makefile
+    sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i lib/Makefile
+    sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
+    sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
+    #sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
+    #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN'; export LDFLAGS
+    make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"; export LDFLAGS
+    make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
+    make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C contrib/pzstd
+    rm -fr /tmp/zstd
+    make install DESTDIR=/tmp/zstd
+    install -v -c -m 0755 contrib/pzstd/pzstd /tmp/zstd/usr/bin/
+    cd /tmp/zstd
+    ln -svf zstd.1 usr/share/man/man1/pzstd.1
+    _strip_files
+    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 1
+    /bin/cp -afr * /
+    sleep 1
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/zstd
+    /sbin/ldconfig
 }
 
-_build_brotli() {
-
-LDFLAGS=''
-LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'
-export LDFLAGS
-
-/sbin/ldconfig
-
-set -e
-
-_tmp_dir="$(mktemp -d)"
-cd "${_tmp_dir}"
-
-git clone --recursive 'https://github.com/google/brotli.git' brotli
-cd brotli
-rm -fr .git
-if [[ -f bootstrap ]]; then
-    ./bootstrap
-    rm -fr autom4te.cache
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+_build_nettle() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _nettle_ver=$(wget -qO- 'https://ftp.gnu.org/gnu/nettle/' | grep -i 'a href="nettle.*\.tar' | sed 's/"/\n/g' | grep -i '^nettle-.*tar.gz$' | sed -e 's|nettle-||g' -e 's|\.tar.*||g' | sort -V | uniq | tail -n 1)
+    wget -c -t 0 -T 9 "https://ftp.gnu.org/gnu/nettle/nettle-${_nettle_ver}.tar.gz"
+    tar -xof nettle-*.tar*
+    sleep 1
+    rm -f nettle-*.tar*
+    cd nettle-*
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
-    --enable-shared --disable-static \
-    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make -j$(nproc) all
-    rm -fr /tmp/brotli
-    make install DESTDIR=/tmp/brotli
-else
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$ORIGIN' ; export LDFLAGS
-    cmake \
-    -S "." \
-    -B "build" \
-    -DCMAKE_BUILD_TYPE='Release' \
-    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
-    -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
-    -DLIB_INSTALL_DIR:PATH=/usr/lib/x86_64-linux-gnu \
-    -DSYSCONF_INSTALL_DIR:PATH=/etc \
-    -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
-    -DLIB_SUFFIX=64 \
-    -DBUILD_SHARED_LIBS:BOOL=ON \
-    -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
-    cmake --build "build" --parallel $(nproc --all) --verbose
-    rm -fr /tmp/brotli
-    DESTDIR="/tmp/brotli" cmake --install "build"
-fi
-cd /tmp/brotli
-sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
-find usr/ -type f -iname '*.la' -delete
-if [[ -d usr/share/man ]]; then
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-    find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
-    sleep 2
-    find -L usr/share/man/ -type l | while read file; do ln -svf "$(readlink -s "${file}").gz" "${file}.gz" ; done
-    sleep 2
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-fi
-find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so.*' -exec chmod 0755 '{}' \;
-sleep 2
-find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-find usr/lib/x86_64-linux-gnu/ -type f -iname 'lib*.so.*' -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-
-sleep 1
-install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
-sleep 1
-cp -a usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
-
-echo
-sleep 2
-tar -Jcvf /tmp/brotli-git-1.el7.x86_64.tar.xz *
-echo
-sleep 2
-tar -xof /tmp/brotli-git-1.el7.x86_64.tar.xz -C /
-
-cd /tmp
-rm -fr "${_tmp_dir}"
-rm -fr /tmp/brotli
-rm -fr /tmp/brotli*tar*
-printf '\033[01;32m%s\033[m\n' '  build brotli done'
-/sbin/ldconfig
-echo
+    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu \
+    --includedir=/usr/include --sysconfdir=/etc \
+    --enable-shared --enable-static --enable-fat
+    make -j$(nproc --all) all
+    rm -fr /tmp/nettle
+    make install DESTDIR=/tmp/nettle
+    cd /tmp/nettle
+    sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 1
+    /bin/cp -afr * /
+    sleep 1
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/nettle
+    /sbin/ldconfig
 }
 
-_build_nettle () {
-
-LDFLAGS=''
-LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'
-export LDFLAGS
-
-/sbin/ldconfig
-
-set -e
-
-_tmp_dir="$(mktemp -d)"
-cd "${_tmp_dir}"
-_nettle_ver=$(wget -qO- 'https://ftp.gnu.org/gnu/nettle/' | grep -i 'a href="nettle.*\.tar' | sed 's/"/\n/g' | grep -i '^nettle-.*tar.gz$' | sed -e 's|nettle-||g' -e 's|\.tar.*||g' | sort -V | uniq | tail -n 1)
-wget -c -t 0 -T 9 "https://ftp.gnu.org/gnu/nettle/nettle-${_nettle_ver}.tar.gz"
-sleep 2
-tar -xof nettle-*.tar*
-sleep 2
-rm -f nettle-*.tar*
-cd nettle-*
-
-./configure \
---build=x86_64-linux-gnu --host=x86_64-linux-gnu \
---prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu \
---includedir=/usr/include --sysconfdir=/etc \
---enable-shared --enable-static --enable-fat
-
-make -j$(nproc) all
-rm -fr /tmp/nettle
-make install DESTDIR=/tmp/nettle
-
-cd /tmp/nettle
-if [[ -d usr/share/man ]]; then
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-    find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
-    sleep 2
-    find -L usr/share/man/ -type l | while read file; do ln -svf "$(readlink -s "${file}").gz" "${file}.gz" ; done
-    sleep 2
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-fi
-find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so.*' -exec chmod 0755 '{}' \;
-sleep 2
-find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-find usr/lib/x86_64-linux-gnu/ -type f -iname 'lib*.so.*' -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
-
-sleep 1
-mkdir -p usr/lib/x86_64-linux-gnu/chrony/private
-sleep 1
-cp -a usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
-
-echo
-sleep 2
-tar -Jcvf /tmp/"nettle_${_nettle_ver}-1_amd64.tar.xz" *
-echo
-sleep 2
-tar -xof /tmp/"nettle_${_nettle_ver}-1_amd64.tar.xz" -C /
-
-cd /tmp
-rm -fr "${_tmp_dir}"
-rm -fr /tmp/nettle
-rm -fr /tmp/nettle*tar*
-/sbin/ldconfig
-sleep 2
-echo
-echo ' done'
-echo
-}
-
-_build_gnutls () {
-
-LDFLAGS=''
-LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'
-export LDFLAGS
-
-/sbin/ldconfig
-
-set -e
-
-_tmp_dir="$(mktemp -d)"
-cd "${_tmp_dir}"
-_gnutls_ver="$(wget -qO- 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/' | grep -i 'a href="gnutls.*\.tar' | sed 's/"/\n/g' | grep -i '^gnutls-.*tar.xz$' | sed -e 's|gnutls-||g' -e 's|\.tar.*||g' | sort -V | uniq | tail -n 1)"
-wget -c -t 0 -T 9 "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${_gnutls_ver}.tar.xz"
-sleep 2
-tar -xof gnutls-*.tar*
-sleep 2
-rm -f gnutls-*.tar*
-cd gnutls-*
-
-./configure \
---build=x86_64-linux-gnu \
---host=x86_64-linux-gnu \
---enable-shared \
---enable-threads=posix \
---enable-sha1-support \
---enable-ssl3-support \
---enable-fips140-mode \
---disable-openssl-compatibility \
---with-included-unistring \
---with-included-libtasn1 \
---prefix=/usr \
---libdir=/usr/lib/x86_64-linux-gnu \
---includedir=/usr/include \
---sysconfdir=/etc
-
-sleep 1
-find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -Wl,-rpath -Wl,/usr/lib/x86_64-linux-gnu||g' -i "{}"
-sleep 1
-find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -R/usr/lib/x86_64-linux-gnu||g' -i "{}"
-sleep 1
-make -j$(nproc) all
-rm -fr /tmp/gnutls
-make install DESTDIR=/tmp/gnutls
-
-cd /tmp/gnutls
-if [[ -d usr/share/man ]]; then
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-    find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
-    sleep 2
-    find -L usr/share/man/ -type l | while read file; do ln -svf "$(readlink -s "${file}").gz" "${file}.gz" ; done
-    sleep 2
-    find -L usr/share/man/ -type l -exec rm -f '{}' \;
-fi
-find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so.*' -exec chmod 0755 '{}' \;
-sleep 2
-find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-find usr/lib/x86_64-linux-gnu/ -type f -iname 'lib*.so.*' -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
-sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
-sleep 1
-mkdir -p usr/lib/x86_64-linux-gnu/chrony/private
-sleep 1
-cp -a usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/chrony/private/
-echo
-sleep 2
-tar -Jcvf /tmp/"gnutls_${_gnutls_ver}-1_amd64.tar.xz" *
-echo
-sleep 2
-tar -xof /tmp/"gnutls_${_gnutls_ver}-1_amd64.tar.xz" -C /
-
-cd /tmp
-rm -fr "${_tmp_dir}"
-rm -fr /tmp/gnutls
-rm -fr /tmp/gnutls*tar*
-/sbin/ldconfig
-sleep 2
-echo
-echo ' done'
-echo
+_build_gnutls() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _gnutls_ver="$(wget -qO- 'https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/' | grep -i 'a href="gnutls.*\.tar' | sed 's/"/\n/g' | grep -i '^gnutls-.*tar.xz$' | sed -e 's|gnutls-||g' -e 's|\.tar.*||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 0 -T 9 "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${_gnutls_ver}.tar.xz"
+    tar -xof gnutls-*.tar*
+    sleep 1
+    rm -f gnutls-*.tar*
+    cd gnutls-*
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu \
+    --host=x86_64-linux-gnu \
+    --enable-shared \
+    --enable-threads=posix \
+    --enable-sha1-support \
+    --enable-ssl3-support \
+    --enable-fips140-mode \
+    --disable-openssl-compatibility \
+    --with-included-unistring \
+    --with-included-libtasn1 \
+    --prefix=/usr \
+    --libdir=/usr/lib/x86_64-linux-gnu \
+    --includedir=/usr/include \
+    --sysconfdir=/etc
+    find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -Wl,-rpath -Wl,/usr/lib/x86_64-linux-gnu||g' -i "{}"
+    find ./ -type f -iname 'Makefile' | xargs -I "{}" sed 's| -R/usr/lib/x86_64-linux-gnu||g' -i "{}"
+    make -j$(nproc --all) all
+    rm -fr /tmp/gnutls
+    make install DESTDIR=/tmp/gnutls
+    cd /tmp/gnutls
+    sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 1
+    /bin/cp -afr * /
+    sleep 1
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/gnutls
+    /sbin/ldconfig
 }
 
 _build_chrony () {
 
 LDFLAGS=''
-#LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,/usr/lib/x86_64-linux-gnu/chrony/private'
 LDFLAGS="${_ORIG_LDFLAGS}"
 export LDFLAGS
 
@@ -483,7 +352,7 @@ cd chrony-*
 --with-hwclockfile=/etc/adjtime \
 --with-pidfile=/run/chrony/chronyd.pid
 
-make -j$(nproc) all
+make -j$(nproc --all) all
 rm -fr /tmp/chrony
 make install DESTDIR=/tmp/chrony
 mkdir -p /tmp/chrony/etc/logrotate.d
@@ -648,10 +517,11 @@ echo
 
 cd /tmp
 rm -fr /usr/lib/x86_64-linux-gnu/chrony
+
 _build_libseccomp
 _build_libedit
-_build_zstd
 _build_brotli
+_build_zstd
 _build_nettle
 _build_gnutls
 _build_chrony
