@@ -78,7 +78,7 @@ _build_libedit() {
     rm -f libedit-*.tar*
     cd libedit-*
     sed -i "s/lncurses/ltinfo/" configure
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
     ./configure \
     --build=x86_64-linux-gnu \
     --host=x86_64-linux-gnu \
@@ -115,7 +115,7 @@ _build_libseccomp() {
     sleep 1
     rm -f libseccomp-*.tar*
     cd libseccomp-*
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
     ./configure \
     --build=x86_64-linux-gnu \
     --host=x86_64-linux-gnu \
@@ -143,14 +143,8 @@ _build_libseccomp() {
 }
 
 _build_zstd() {
-LDFLAGS=''
-LDFLAGS="${_ORIG_LDFLAGS}"
-export LDFLAGS
-
 /sbin/ldconfig
-
 set -e
-
 _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
 
@@ -175,10 +169,11 @@ sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
 sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 
-sleep 1
+LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN'; export LDFLAGS
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
+LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"; export LDFLAGS
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
-sleep 1
+
 rm -fr /tmp/zstd
 sleep 1
 make install DESTDIR=/tmp/zstd
@@ -200,6 +195,7 @@ sleep 2
 find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
 find usr/lib/x86_64-linux-gnu/ -type f -iname 'lib*.so.*' -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs -I '{}' strip '{}'
 
+find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
 sleep 1
 install -m 0755 -d usr/lib/x86_64-linux-gnu/chrony/private
 sleep 1
