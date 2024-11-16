@@ -176,8 +176,8 @@ sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 
 sleep 1
-#make V=1 all prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
-make -j$(nproc) V=1 lib prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
 sleep 1
 rm -fr /tmp/zstd
 sleep 1
