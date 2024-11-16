@@ -64,9 +64,9 @@ sleep 2
 tar -xof /tmp/"lz4_${_lz4_ver}-1_amd64.tar.xz" -C /
 /sbin/ldconfig
 rm -fr /tmp/lz4
-
 cd "${_tmp_dir}"
 rm -fr lz4
+
 cd zstd
 sed '/^PREFIX/s|= .*|= /usr|g' -i Makefile
 sed '/^LIBDIR/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i Makefile
@@ -81,11 +81,15 @@ sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
 sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 sleep 1
-make -j$(nproc) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C contrib/pzstd
 rm -fr /tmp/zstd
 rm -fr /tmp/zstd*.tar*
 make install DESTDIR=/tmp/zstd
+install -v -c -m 0755 contrib/pzstd/pzstd /tmp/zstd/usr/bin/
 cd /tmp/zstd
+ln -svf zstd.1 usr/share/man/man1/pzstd.1
 find -L usr/share/man/ -type l -exec rm -f '{}' \;
 find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
 sleep 2
