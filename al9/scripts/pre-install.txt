@@ -74,8 +74,10 @@ yum install -y libbpf
 
 yum install -y dracut ; yum update -y dracut
 
+# For fido2
 yum install -y libcbor || true 
 yum install -y libcbor-devel || true 
+yum install -y pcsc-lite-devel pcsc-lite pcsc-lite-ccid
 
 /sbin/ldconfig >/dev/null 2>&1
 echo
