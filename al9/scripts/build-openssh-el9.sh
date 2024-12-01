@@ -272,7 +272,7 @@ _build_openssl33() {
     /sbin/ldconfig
 }
 
-_build_fido2 () {
+_build_fido2() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
@@ -313,7 +313,7 @@ _build_brotli
 _build_zstd
 _build_libedit
 _build_openssl33
-#_build_fido2
+_build_fido2
 
 LDFLAGS=''
 LDFLAGS="-Wl,-z,relro -Wl,--as-needed -Wl,-z,now"
