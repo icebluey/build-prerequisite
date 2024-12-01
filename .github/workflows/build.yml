@@ -25,15 +25,15 @@ jobs:
           _release_ver="$(date -u +%Y-%m-%d-%H%M)"
           echo "_release_ver=${_release_ver}" >> $GITHUB_ENV
 
-      - name: Build ub2204 prerequisite
-        run: |
-          sudo /bin/bash run-build-ub2204.sh
-          sudo /bin/systemctl stop docker.socket docker.service containerd.service
-          sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
-
       - name: Build al9 prerequisite
         run: |
           sudo /bin/bash run-build-al9.sh
+          sudo /bin/systemctl stop docker.socket docker.service containerd.service
+          sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
+
+      - name: Build ub2204 prerequisite
+        run: |
+          sudo /bin/bash run-build-ub2204.sh
           sudo /bin/systemctl stop docker.socket docker.service containerd.service
           sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
 
