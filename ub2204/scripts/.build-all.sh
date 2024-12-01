@@ -59,28 +59,22 @@ exit
 gpgconf --kill all
 sleep 1
 pkill gpg-agent
-systemctl disable ssh >/dev/null 2>&1 || : 
-systemctl disable sshd >/dev/null 2>&1 || : 
-systemctl disable ssh.socket >/dev/null 2>&1 || : 
-systemctl disable sshd-keygen.service >/dev/null 2>&1 || : 
-systemctl disable ssh-agent.service >/dev/null 2>&1 || : 
-systemctl stop ssh >/dev/null 2>&1 || : 
-systemctl stop sshd >/dev/null 2>&1 || : 
-systemctl stop ssh.socket >/dev/null 2>&1 || : 
-systemctl stop sshd-keygen.service >/dev/null 2>&1 || : 
-systemctl stop ssh-agent.service >/dev/null 2>&1 || : 
-systemctl stop chrony >/dev/null 2>&1 || : 
-systemctl disable chrony >/dev/null 2>&1 || : 
-systemctl stop dnscrypt-proxy.service || : 
-systemctl stop sshd.service || : 
-systemctl stop ssh.service || : 
-systemctl stop chronyd.service || : 
-systemctl stop chrony.service || : 
-systemctl disable dnscrypt-proxy.service || : 
-systemctl disable sshd.service || : 
 systemctl disable ssh.service || : 
-systemctl disable chronyd.service || : 
+systemctl disable sshd.service || : 
+systemctl disable ssh.socket || : 
+systemctl disable sshd-keygen.service || : 
+systemctl disable ssh-agent.service || : 
+systemctl stop ssh.service || : 
+systemctl stop sshd.service || : 
+systemctl stop ssh.socket || : 
+systemctl stop sshd-keygen.service || : 
+systemctl stop ssh-agent.service || : 
+systemctl stop chrony.service || : 
 systemctl disable chrony.service || : 
+systemctl stop chronyd.service || : 
+systemctl disable chronyd.service || : 
+systemctl stop dnscrypt-proxy.service || : 
+systemctl disable dnscrypt-proxy.service || : 
 sleep 1
 rm -fr /etc/ssh /etc/dnscrypt-proxy /etc/chrony
 rm -fr /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
@@ -104,7 +98,7 @@ systemctl enable dnscrypt-proxy.service || :
 systemctl enable sshd.service || : 
 systemctl enable chronyd.service || : 
 systemctl start dnscrypt-proxy.service
-sleep 5 ; systemctl start chronyd.service
+systemctl start chronyd.service
 
 
 ' > .install.txt

@@ -16,7 +16,7 @@ fi
 sleep 2
 docker exec ub2204 apt update -y
 #docker exec ub2204 apt upgrade -fy
-docker exec ub2204 apt install -y bash vim wget ca-certificates curl
+docker exec ub2204 apt install -y bash wget ca-certificates curl
 docker exec ub2204 /bin/ln -svf bash /bin/sh
 docker exec ub2204 /bin/bash -c '/bin/rm -fr /tmp/*'
 docker cp ub2204 ub2204:/home/
@@ -25,7 +25,7 @@ docker exec ub2204 /bin/bash /home/ub2204/scripts/.build-all.sh
 mkdir -p /tmp/_output_assets
 docker cp ub2204:/tmp/bintar /tmp/_output_assets/
 cd /tmp/_output_assets
-_dateutc=$(date -u +%Y-%m-%d-%H%M)
+_dateutc=$(date -u +%Y-%m-%d)
 mv -f bintar ub2204-"v${_dateutc}"
 sleep 1
 tar -cvf ub2204-"v${_dateutc}".tar ub2204-"v${_dateutc}"
@@ -33,3 +33,4 @@ sleep 1
 sha256sum ub2204-"v${_dateutc}".tar > ub2204-"v${_dateutc}".tar.sha256
 /bin/rm -fr ub2204-"v${_dateutc}"
 exit
+
