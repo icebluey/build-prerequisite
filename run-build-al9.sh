@@ -23,7 +23,6 @@ docker exec al9 yum install -y wget bash
 docker exec al9 /bin/bash -c 'ln -svf bash /bin/sh'
 docker exec al9 /bin/bash -c 'rm -fr /tmp/*'
 docker cp al9 al9:/home/
-docker exec al9 /bin/bash /home/al9/scripts/pre-install.txt
 docker exec al9 /bin/bash /home/al9/scripts/.build-all.sh
 mkdir -p /tmp/_output_assets
 docker cp al9:/tmp/bintar /tmp/_output_assets/
