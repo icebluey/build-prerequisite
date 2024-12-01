@@ -1,4 +1,7 @@
 #
+
+if ! grep -q '^alias ll=' ~/.bashrc; then echo "alias ll='/bin/ls --color -lah'" >> ~/.bashrc; . ~/.bashrc; fi
+
 dnf install -y libassuan libassuan-devel libgcrypt libgcrypt-devel libgpg-error libgpg-error-devel libksba libksba-devel npth npth-devel gnupg2
 dnf install -y openssh openssh-clients openssh-server
 
