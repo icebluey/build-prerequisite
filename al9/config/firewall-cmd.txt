@@ -1,0 +1,27 @@
+
+firewall-cmd --get-services
+firewall-cmd --get-services | sed 's| |\n|g'
+firewall-cmd --permanent --zone=public --add-service=ssh
+firewall-cmd --permanent --zone=public --add-port=443/tcp
+firewall-cmd --permanent --zone=public --add-port=443/udp
+firewall-cmd --permanent --zone=public --add-port=20031-20061/tcp 
+firewall-cmd --permanent --zone=public --add-port=20031-20061/udp 
+
+firewall-cmd --get-zones
+firewall-cmd --get-default-zone
+firewall-cmd --list-all
+firewall-cmd --list-services
+firewall-cmd --list-ports
+
+# simple
+firewall-cmd --permanent --add-port={80,443}/tcp
+
+# Both protocols
+firewall-cmd --permanent --add-port={80,443}/{tcp,udp}
+
+# can be a bit complex and note the nested parentheses
+firewall-cmd --permanent --add-port={{80,443}/{tcp,udp},{110,995}/tcp}
+
+firewall-cmd --reload
+
+
