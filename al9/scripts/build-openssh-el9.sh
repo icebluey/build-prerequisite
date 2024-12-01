@@ -363,7 +363,8 @@ getent passwd sshd >/dev/null || \
 sed 's|^#UsePAM .*|UsePAM yes|g' -i sshd_config
 sed '/^#PrintMotd .*/s|^#PrintMotd .*|\n# It is recommended to use pam_motd in /etc/pam.d/sshd instead of PrintMotd,\n# as it is more configurable and versatile than the built-in version.\nPrintMotd no\n|g' -i sshd_config
 sed 's|^#SyslogFacility .*|SyslogFacility AUTHPRIV|' -i sshd_config
-sed 's|^#PermitRootLogin .*|PermitRootLogin no|' -i sshd_config
+#sed 's|^#PermitRootLogin .*|PermitRootLogin no|' -i sshd_config
+sed 's|^#PermitRootLogin .*|PermitRootLogin prohibit-password|' -i sshd_config
 
 ./configure \
 --prefix=/usr \
