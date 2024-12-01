@@ -21,6 +21,7 @@ mkdir /tmp/.tar.tmp
 
 set -e
 
+bash install-kernel.sh
 bash pre-install.txt
 
 bash build-dnscrypt-proxy-el9.sh
