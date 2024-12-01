@@ -1,0 +1,28 @@
+#
+dnf install -y libassuan libassuan-devel libgcrypt libgcrypt-devel libgpg-error libgpg-error-devel libksba libksba-devel npth npth-devel gnupg2
+dnf install -y openssh openssh-clients openssh-server
+
+yum install -y chrony
+sed 's/^pool /#pool /g' -i /etc/chrony.conf
+sed 's/^server/#server/g' -i /etc/chrony.conf
+sed 's/^allow /#allow /g' -i /etc/chrony.conf
+sed '5i# Use public NTS servers' -i /etc/chrony.conf
+sed '6iserver time.cloudflare.com iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '7iserver gbg1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '8iserver gbg2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '9iserver lul1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '10iserver lul2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '11iserver mmo1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '12iserver mmo2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '13iserver sth1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '14iserver sth2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '15iserver svl1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '16iserver svl2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i /etc/chrony.conf
+sed '17i#server time1.google.com iburst minpoll 4 maxpoll 5' -i /etc/chrony.conf
+sed '18i#server time2.google.com iburst minpoll 4 maxpoll 5' -i /etc/chrony.conf
+sed '19i#server time3.google.com iburst minpoll 4 maxpoll 5' -i /etc/chrony.conf
+sed '20i#server time4.google.com iburst minpoll 4 maxpoll 5\n' -i /etc/chrony.conf
+sed 's|^#hwtimestamp|hwtimestamp|g' -i /etc/chrony.conf
+echo 'ntsrefresh 300' >> /etc/chrony.conf
+echo 'refresh 300' >> /etc/chrony.conf
+
