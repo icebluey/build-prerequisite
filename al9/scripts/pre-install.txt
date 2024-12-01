@@ -74,6 +74,9 @@ yum install -y libbpf
 
 yum install -y dracut ; yum update -y dracut
 
+yum install -y libcbor || true 
+yum install -y libcbor-devel || true 
+
 /sbin/ldconfig >/dev/null 2>&1
 echo
 echo ' preinstall 9 done'
