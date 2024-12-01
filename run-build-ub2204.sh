@@ -20,7 +20,6 @@ docker exec ub2204 apt install -y bash wget ca-certificates curl
 docker exec ub2204 /bin/ln -svf bash /bin/sh
 docker exec ub2204 /bin/bash -c '/bin/rm -fr /tmp/*'
 docker cp ub2204 ub2204:/home/
-docker exec ub2204 /bin/bash /home/ub2204/scripts/pre-install.txt
 docker exec ub2204 /bin/bash /home/ub2204/scripts/.build-all.sh
 mkdir -p /tmp/_output_assets
 docker cp ub2204:/tmp/bintar /tmp/_output_assets/
