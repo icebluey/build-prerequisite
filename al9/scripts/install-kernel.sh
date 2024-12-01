@@ -3,7 +3,9 @@ export PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 TZ='UTC'; export TZ
 umask 022
 /sbin/ldconfig
+dnf makecache
 dnf install -y wget tar gzip xz bzip2 gawk sed grep
+dnf install -y kernel kernel-core kernel-devel kernel-headers
 set -e
 _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
@@ -28,8 +30,6 @@ gpgcheck = 0
 proxy=_none_
 EOF
 #
-dnf makecache
-dnf install -y kernel kernel-core kernel-devel kernel-headers
 dnf upgrade -y kernel kernel-core kernel-devel kernel-headers
 exit
 
