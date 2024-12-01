@@ -82,8 +82,10 @@ systemctl disable ssh.service || :
 systemctl disable chronyd.service || : 
 systemctl disable chrony.service || : 
 sleep 1
-rm -fr /etc/ssh /etc/dnscrypt-proxy /etc/gnupg /etc/chrony
-rm -fr /usr/lib/x86_64-linux-gnu/chrony /var/lib/chrony
+rm -fr /etc/ssh /etc/dnscrypt-proxy /etc/chrony
+rm -fr /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
+rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private
+rm -fr /usr/lib/x86_64-linux-gnu/openssh/private /usr/lib/openssh
 
 
 #
