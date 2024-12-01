@@ -26,10 +26,10 @@ mkdir -p /tmp/_output_assets
 docker cp ub2204:/tmp/bintar /tmp/_output_assets/
 cd /tmp/_output_assets
 _dateutc=$(date -u +%Y-%m-%d-%H%M)
-mv -f bintar bintar-ub2204-"v${_dateutc}"
+mv -f bintar ub2204-"v${_dateutc}"
 sleep 1
-tar -cvf bintar-ub2204-"v${_dateutc}".tar bintar-ub2204-"v${_dateutc}"
+tar -cvf ub2204-"v${_dateutc}".tar ub2204-"v${_dateutc}"
 sleep 1
-sha256sum bintar-ub2204-"v${_dateutc}".tar > bintar-ub2204-"v${_dateutc}".tar.sha256
-/bin/rm -fr bintar-ub2204-"v${_dateutc}"
+sha256sum ub2204-"v${_dateutc}".tar > ub2204-"v${_dateutc}".tar.sha256
+/bin/rm -fr ub2204-"v${_dateutc}"
 exit
