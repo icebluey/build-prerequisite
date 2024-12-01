@@ -1,0 +1,17 @@
+
+firewall-cmd --permanent --new-ipset=blocker --type=hash:net
+firewall-cmd --permanent --ipset=blocker --add-entries-from-file="/opt/ipblacklist/ip-blocklist.txt"
+firewall-cmd --permanent --zone=drop --add-source=ipset:blocker
+
+#firewall-cmd --permanent --ipset=blocker --add-entry=192.168.0.1
+
+firewall-cmd --permanent --zone=drop --list-all
+
+firewall-cmd --permanent --get-ipsets
+firewall-cmd --permanent --ipset=blocker --get-entries
+firewall-cmd --permanent --info-ipset=blocker
+ipset -L
+
+firewall-cmd --reload
+
+

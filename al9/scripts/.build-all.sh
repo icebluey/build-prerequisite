@@ -34,6 +34,7 @@ bash build-openssh-el9.sh
 mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
 cp -pf pre-install.txt /tmp/.tar.tmp/requirements.txt
+cp -pfr ../config /tmp/.tar.tmp/.config
 sleep 2
 mv -f /tmp/.tar.tmp /tmp/bintar
 sleep 2
