@@ -2,12 +2,12 @@
 
 if ! grep -q '^alias ll=' ~/.bashrc; then echo "alias ll='/bin/ls --color -lah'" >> ~/.bashrc; . ~/.bashrc; fi
 
-yum install -y ncurses
+dnf install -y ncurses
 
 dnf install -y libassuan libassuan-devel libgcrypt libgcrypt-devel libgpg-error libgpg-error-devel libksba libksba-devel npth npth-devel gnupg2
 dnf install -y openssh openssh-clients openssh-server
 
-yum install -y chrony tzdata
+dnf install -y chrony tzdata
 sed 's/^pool /#pool /g' -i /etc/chrony.conf
 sed 's/^server/#server/g' -i /etc/chrony.conf
 sed 's/^allow /#allow /g' -i /etc/chrony.conf
