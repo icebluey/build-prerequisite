@@ -8,6 +8,7 @@ dnf makecache
 dnf install -y dnf-plugins-core
 dnf config-manager --set-enabled crb
 dnf makecache
+dnf install -y almalinux-release-devel
 dnf install -y epel-release
 dnf makecache
 /usr/bin/crb enable
