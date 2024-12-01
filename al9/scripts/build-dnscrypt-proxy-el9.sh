@@ -232,7 +232,6 @@ sleep 2
 ###############################################################################
 
 cd /tmp
-sha256sum "dnscrypt-proxy_${_dnscrypt_proxy_ver}-1_static.tar.xz" > "dnscrypt-proxy_${_dnscrypt_proxy_ver}-1_static.tar.xz".sha256
 
 rm -fr /tmp/dnscrypt-proxy
 rm -fr /tmp/dnscrypt-proxy.service
