@@ -135,8 +135,8 @@ ln -svf tar.1 /usr/share/man/man1/gtar.1
 
 #mv -f usr/share/man/man8/rmt.8 usr/share/man/man8/rmt-tar.8
 #mv -f usr/sbin/rmt usr/sbin/rmt-tar
-rm -f usr/sbin/rmt
-rm -f usr/share/man/man8/rmt.8
+#rm -f usr/sbin/rmt
+#rm -f usr/share/man/man8/rmt.8
 
 find -L usr/share/man/ -type l -exec rm -f '{}' \;
 find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
