@@ -30,6 +30,7 @@ gpgcheck = 0
 proxy=_none_
 EOF
 #
+dnf makecache
 dnf upgrade -y kernel kernel-core kernel-devel kernel-headers
 exit
 
