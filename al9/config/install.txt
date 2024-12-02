@@ -2,6 +2,15 @@
 
 if ! grep -q '^alias ll=' ~/.bashrc; then echo "alias ll='/bin/ls --color -lah'" >> ~/.bashrc; . ~/.bashrc; fi
 
+dnf makecache
+dnf install -y dnf-plugins-core epel-release
+dnf config-manager --set-enabled crb
+/usr/bin/crb enable
+dnf makecache
+dnf upgrade -y dnf-plugins-core epel-release
+#dnf install -y almalinux-release-devel
+dnf makecache
+
 dnf install -y ncurses ncurses-libs
 dnf install -y libassuan libassuan-devel libgcrypt libgcrypt-devel libgpg-error libgpg-error-devel libksba libksba-devel npth npth-devel gnupg2
 dnf install -y openssh openssh-clients openssh-server libcbor pcsc-lite-libs
