@@ -4,7 +4,7 @@ if ! grep -q '^alias ll=' ~/.bashrc; then echo "alias ll='/bin/ls --color -lah'"
 
 dnf install -y ncurses ncurses-libs
 dnf install -y libassuan libassuan-devel libgcrypt libgcrypt-devel libgpg-error libgpg-error-devel libksba libksba-devel npth npth-devel gnupg2
-dnf install -y openssh openssh-clients openssh-server
+dnf install -y openssh openssh-clients openssh-server libcbor pcsc-lite-libs
 
 dnf install -y chrony tzdata
 sed 's/^pool /#pool /g' -i /etc/chrony.conf
