@@ -5,14 +5,12 @@ TZ='UTC'; export TZ
 if ! grep -q '^alias ll=' ~/.bashrc; then echo "alias ll='/bin/ls --color -lah'" >> ~/.bashrc; . ~/.bashrc; fi
 
 dnf makecache
-dnf install -y dnf-plugins-core
+dnf install -y dnf-plugins-core epel-release
 dnf config-manager --set-enabled crb
-dnf makecache
-dnf install -y almalinux-release-devel
-dnf install -y epel-release
-dnf makecache
 /usr/bin/crb enable
-dnf upgrade -y epel-release
+dnf makecache
+dnf upgrade -y dnf-plugins-core epel-release
+dnf install -y almalinux-release-devel
 dnf makecache
 dnf upgrade -y
 
