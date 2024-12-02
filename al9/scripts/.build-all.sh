@@ -38,6 +38,8 @@ mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
 cp -pf pre-install.txt /tmp/.tar.tmp/requirements.txt
 cp -pfr ../config /tmp/.tar.tmp/.config
+cp -pf install-kernel.sh /tmp/.tar.tmp/install-kernel.sh
+chmod 0755 /tmp/.tar.tmp/install-kernel.sh
 sleep 2
 mv -f /tmp/.tar.tmp /tmp/bintar
 sleep 2
