@@ -343,7 +343,7 @@ cd gnupg-*
 --enable-build-timestamp \
 --enable-key-cache=10240 \
 --prefix=/usr \
---libexecdir=/usr/lib/gnupg \
+--libexecdir=/usr/libexec \
 --libdir=/usr/lib64 \
 --includedir=/usr/include \
 --sysconfdir=/etc \
@@ -445,8 +445,8 @@ fi
 if [[ -d usr/bin ]]; then
     find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../lib64/gnupg/private' '{}'
 fi
-if [[ -d usr/lib/gnupg ]]; then
-    find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../../lib64/gnupg/private' '{}'
+if [[ -d usr/libexec ]]; then
+    find usr/libexec/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../lib64/gnupg/private' '{}'
 fi
 
 sleep 1
