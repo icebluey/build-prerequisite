@@ -59,18 +59,18 @@ exit
 gpgconf --kill all
 sleep 1
 pkill gpg-agent
-systemctl disable ssh.service || : 
-systemctl disable sshd.service || : 
-systemctl disable ssh.socket || : 
-systemctl disable sshd-keygen.service || : 
-systemctl disable ssh-agent.service || : 
-systemctl stop ssh.service || : 
-systemctl stop sshd.service || : 
-systemctl stop ssh.socket || : 
-systemctl stop sshd-keygen.service || : 
-systemctl stop ssh-agent.service || : 
-systemctl disable dnscrypt-proxy.service || : 
-systemctl stop dnscrypt-proxy.service || : 
+systemctl disable ssh.service >/dev/null 2>&1 || : 
+systemctl disable sshd.service >/dev/null 2>&1 || : 
+systemctl disable ssh.socket >/dev/null 2>&1 || : 
+systemctl disable sshd-keygen.service >/dev/null 2>&1 || : 
+systemctl disable ssh-agent.service >/dev/null 2>&1 || : 
+systemctl stop ssh.service >/dev/null 2>&1 || : 
+systemctl stop sshd.service >/dev/null 2>&1 || : 
+systemctl stop ssh.socket >/dev/null 2>&1 || : 
+systemctl stop sshd-keygen.service >/dev/null 2>&1 || : 
+systemctl stop ssh-agent.service >/dev/null 2>&1 || : 
+systemctl disable dnscrypt-proxy.service >/dev/null 2>&1 || : 
+systemctl stop dnscrypt-proxy.service >/dev/null 2>&1 || : 
 sleep 1
 rm -fr /etc/ssh /etc/dnscrypt-proxy
 rm -fr /etc/gnupg /usr/lib64/gnupg/private
@@ -81,15 +81,15 @@ rm -fr /usr/lib64/openssh/private /usr/libexec/openssh
 bash /etc/ssh/.install.txt
 bash /etc/dnscrypt-proxy/.install.txt
 bash /etc/gnupg/.install.txt
+systemctl daemon-reload >/dev/null 2>&1 || : 
 systemctl stop systemd-timesyncd >/dev/null 2>&1
 systemctl disable systemd-timesyncd >/dev/null 2>&1
-systemctl disable dnscrypt-proxy.service || : 
-systemctl disable sshd.service || : 
-systemctl disable ssh.service || : 
-systemctl enable dnscrypt-proxy.service || : 
+systemctl disable dnscrypt-proxy.service >/dev/null 2>&1 || : 
+systemctl disable sshd.service >/dev/null 2>&1 || : 
+systemctl disable ssh.service >/dev/null 2>&1 || : 
 systemctl enable sshd.service || : 
+systemctl enable dnscrypt-proxy.service || : 
 systemctl start dnscrypt-proxy.service
-
 
 ' > .install.txt
 
