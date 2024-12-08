@@ -1,0 +1,59 @@
+dd if=/dev/zero of=/swap bs=2M count=1024 iflag=fullblock
+chmod 0600 /swap
+mkswap /swap
+swapon /swap
+swapon --show
+# /etc/fstab
+/swap swap swap defaults 0 0
+
+rm -vf /etc/localtime
+ln -sv ../usr/share/zoneinfo/UTC /etc/localtime
+
+
+sed -e '/^User=/d' -i /etc/systemd/system/warp-svc.service
+sed -e '/^Group=/d' -i /etc/systemd/system/warp-svc.service
+sed -e '/\[Service\]/aUser=cfwarp\nGroup=cfwarp' -i /etc/systemd/system/warp-svc.service
+sed 's|LogsDirectory=.*|LogsDirectory=warp-svc|g' -i /etc/systemd/system/warp-svc.service
+sleep 1
+systemctl daemon-reload
+
+[ -d /var/log/warp-svc ] || mkdir /var/log/warp-svc
+chown cfwarp:cfwarp /var/log/warp-svc
+chmod 0755 /var/log/warp-svc
+touch /var/log/warp-svc/warp_svc.log
+chmod 0644 /var/log/warp-svc/warp_svc.log
+
+rm -fr /var/log/cloudflare-warp
+
+
+curl -x "socks5://127.0.0.1:10005" https://ipinfo.io 2>/dev/null | jq .
+curl -x "socks5://127.0.0.1:1080" https://ipinfo.io 2>/dev/null | jq .
+curl -x "http://127.0.0.1:1081" https://ipinfo.io 2>/dev/null | jq .
+
+nmcli connection add type ethernet \
+con-name ens3 ifname ens3 \
+ip4 1.2.3.4/24 \
+gw4 1.2.3.1 \
+ipv4.method manual \
+ipv4.ignore-auto-dns yes \
+ipv4.dns "127.0.0.1" \
+ip6 "1:2:3:4/64" \
+ipv6.method auto \
+ipv6.ignore-auto-dns yes \
+ipv6.dns "::1"
+
+ipv6.method auto ->
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+#DHCPV6C=no (没有这一项)
+
+ipv6.method dhcp ->
+IPV6INIT=yes
+IPV6_AUTOCONF=no
+DHCPV6C=yes
+
+ipv4.ignore-auto-dns yes -> PEERDNS=no
+ipv6.ignore-auto-dns yes -> IPV6_PEERDNS=no
+ipv6.method auto -> IPV6_AUTOCONF=yes
+
+
