@@ -100,6 +100,10 @@ _build_sqlite() {
 mkdir -p /tmp/.sqlite.orig
 /bin/cp -af /usr/lib64/libsqlite3.so* /tmp/.sqlite.orig/
 
+rm -fr /usr/lib64/gnupg/private
+
+_build_sqlite
+
 ###############################################################################
 
 _tmp_dir="$(mktemp -d)"
@@ -144,10 +148,6 @@ rm -f *.tar*
 #pinentry-1.2.1
 #gnupg-2.4.1
 #gpgme-1.20.0
-
-rm -fr /usr/lib64/gnupg/private
-
-_build_sqlite
 
 ###############################################################################
 
