@@ -342,6 +342,7 @@ cd gnupg-*
 --enable-g13 \
 --enable-build-timestamp \
 --enable-key-cache=10240 \
+--enable-large-secmem \
 --prefix=/usr \
 --libexecdir=/usr/libexec \
 --libdir=/usr/lib64 \
