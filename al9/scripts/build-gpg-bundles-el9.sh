@@ -472,7 +472,6 @@ rm -fr "${_tmp_dir}"
 
 # restore sqlite
 #yum reinstall -y sqlite-libs
-/bin/cp -af /tmp/.sqlite.orig/libsqlite3.so* /usr/lib64/
 
 if ls /tmp/.sqlite.orig/libsqlite3.so* >/dev/null 2>&1; then /bin/cp -afv /tmp/.sqlite.orig/libsqlite3.so* /usr/lib64/; fi
 sleep 1
