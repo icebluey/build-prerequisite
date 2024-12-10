@@ -39,3 +39,6 @@ sed 's|^#hwtimestamp|hwtimestamp|g' -i /etc/chrony.conf
 echo 'ntsrefresh 300' >> /etc/chrony.conf
 echo 'refresh 300' >> /etc/chrony.conf
 
+# warp
+dnf install -y ca-certificates dbus desktop-file-utils glibc iproute libpcap nftables nss-tools
+
