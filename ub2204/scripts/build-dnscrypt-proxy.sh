@@ -146,6 +146,8 @@ sed 's|^keepalive = .*|keepalive = 7200|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.
 sed 's|^http3 = .*|http3 = true|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed 's|^# log_level = .*|log_level = 0|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
+sed 's|refresh_delay = 72|refresh_delay = 24|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
+
 ###############################################################################
 
 echo '[Unit]
