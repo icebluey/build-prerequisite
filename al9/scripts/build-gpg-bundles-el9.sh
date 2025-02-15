@@ -77,7 +77,7 @@ _build_sqlite() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
     --prefix=/usr --libdir=/usr/lib64 --includedir=/usr/include --sysconfdir=/etc \
-    --enable-readline --enable-dynamic-extensions --enable-static-shell \
+    --enable-readline --enable-static-shell \
     --enable-fts5 --enable-fts4 --enable-math --enable-rtree
     make -j$(nproc --all) all
     rm -fr /tmp/sqlite
