@@ -78,7 +78,7 @@ _build_sqlite() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc \
-    --enable-readline --all --enable-math --enable-json --enable-load-extension
+    --all --enable-math --enable-json --enable-load-extension
     make -j$(nproc --all) all
     rm -fr /tmp/sqlite
     make install DESTDIR=/tmp/sqlite
