@@ -58,6 +58,6 @@ see /var/log/unattended-upgrades/unattended-upgrades.log
 EOF
 fi
 
-cat /dev/null > /var/lib/unattended-upgrades/kept-back
+rm -vf /var/lib/unattended-upgrades/kept-back
 
 ```
