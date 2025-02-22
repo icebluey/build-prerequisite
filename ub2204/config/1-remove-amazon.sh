@@ -3,6 +3,7 @@ export PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 TZ='UTC'; export TZ
 
 apt autoremove --purge -y needrestart
+apt autoremove --purge -y ubuntu-pro-client ubuntu-pro-client-l10n
 
 snap stop amazon-ssm-agent
 sleep 1
