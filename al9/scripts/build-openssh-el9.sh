@@ -413,22 +413,27 @@ sleep 1
 rm -f etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
-echo "Ciphers $(./usr/bin/ssh -Q cipher | grep -iE '256.*gcm|gcm.*256|chacha' | paste -sd','),$(./usr/bin/ssh -Q cipher | grep -ivE 'gcm|chacha|cbc' | grep '256' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+#echo "Ciphers $(./usr/bin/ssh -Q cipher | grep -iE '256.*gcm|gcm.*256|chacha' | paste -sd','),$(./usr/bin/ssh -Q cipher | grep -ivE 'gcm|chacha|cbc' | grep '256' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+echo "Ciphers $(./usr/bin/ssh -Q cipher | grep -iE '256.*gcm|gcm.*256' | paste -sd','),$(./usr/bin/ssh -Q cipher | grep -i ctr | grep '256' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
 echo "MACs $(./usr/bin/ssh -Q mac | grep -i 'hmac-sha[23]' | grep -E '256|512' | grep '[0-9]$' | sort -r | paste -sd','),$(./usr/bin/ssh -Q mac | grep -i 'hmac-sha[23]' | grep -E '256|512' | grep '\@' | sort -r | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
-echo "KexAlgorithms $(./usr/bin/ssh -Q kex | grep -iE '25519|448' | grep -iv '\@libssh' | sort -r | paste -sd','),$(./usr/bin/ssh -Q kex | grep -i 'ecdh-sha[23]-nistp5' | sort -r | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+#echo "KexAlgorithms $(./usr/bin/ssh -Q kex | grep -iE '25519|448' | grep -iv '\@libssh' | sort -r | paste -sd','),$(./usr/bin/ssh -Q kex | grep -i 'ecdh-sha[23]-nistp5' | sort -r | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+echo "KexAlgorithms $(./usr/bin/ssh -Q kex | grep -iE '25519|448' | grep -iv '\@libssh' | sort -r | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
-echo "PubkeyAcceptedAlgorithms $(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+#echo "PubkeyAcceptedAlgorithms $(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+echo "PubkeyAcceptedAlgorithms $(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -iE 'ed25519|ed448' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q PubkeyAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
-echo "HostKeyAlgorithms $(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+#echo "HostKeyAlgorithms $(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+echo "HostKeyAlgorithms $(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -iE 'ed25519|ed448' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostKeyAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 
 echo '#' >> etc/ssh/ssh-hardening-options.txt
-echo "HostbasedAcceptedAlgorithms $(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+#echo "HostbasedAcceptedAlgorithms $(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448|sha[23].*nistp521' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
+echo "HostbasedAcceptedAlgorithms $(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448' | grep -v '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -iE 'ed25519|ed448' | grep '\@' | paste -sd','),$(./usr/bin/ssh -Q HostbasedAcceptedAlgorithms | grep -i 'rsa-' | grep -i 'sha[23]-512' | paste -sd',')" >> etc/ssh/ssh-hardening-options.txt
 ############################################################################
 
 sleep 1
@@ -436,6 +441,7 @@ mv -f etc/ssh/moduli etc/ssh/moduli.orig
 sleep 1
 awk '$5 >= 3071' etc/ssh/moduli.orig > etc/ssh/moduli
 sleep 1
+rm -f etc/ssh/moduli.orig
 chmod 0644 etc/ssh/moduli
 sed 's|^Subsystem[ \t]*sftp|#&|g' -i etc/ssh/sshd_config
 sleep 1
