@@ -148,6 +148,8 @@ sed 's|^# log_level = .*|log_level = 0|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.t
 
 sed 's|refresh_delay = 72|refresh_delay = 24|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
+sed "s|^#bootstrap_resolvers =.*|bootstrap_resolvers = ['1.1.1.1:53','8.8.8.8:53','9.9.9.9:53']|g" -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
+
 ###############################################################################
 
 echo '[Unit]
