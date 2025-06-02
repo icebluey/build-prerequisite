@@ -239,12 +239,12 @@ _build_openssl33() {
     /sbin/ldconfig
 }
 
-_build_openssl34() {
+_build_openssl35() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    _openssl34_ver="$(wget -qO- 'https://openssl-library.org/source/index.html' | grep 'openssl-3\.4\.' | sed 's|"|\n|g' | sed 's|/|\n|g' | grep -i '^openssl-3\.4\..*\.tar\.gz$' | cut -d- -f2 | sed 's|\.tar.*||g' | sort -V | uniq | tail -n 1)"
-    wget -c -t 9 -T 9 "https://github.com/openssl/openssl/releases/download/openssl-${_openssl34_ver}/openssl-${_openssl34_ver}.tar.gz"
+    _openssl35_ver="$(wget -qO- 'https://openssl-library.org/source/index.html' | grep 'openssl-3\.5\.' | sed 's|"|\n|g' | sed 's|/|\n|g' | grep -i '^openssl-3\.5\..*\.tar\.gz$' | cut -d- -f2 | sed 's|\.tar.*||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 9 -T 9 https://github.com/openssl/openssl/releases/download/openssl-${_openssl35_ver}/openssl-${_openssl35_ver}.tar.gz
     tar -xof openssl-*.tar*
     sleep 1
     rm -f openssl-*.tar*
@@ -252,7 +252,7 @@ _build_openssl34() {
     # Only for debian/ubuntu
     sed '/define X509_CERT_FILE .*OPENSSLDIR "/s|"/cert.pem"|"/certs/ca-certificates.crt"|g' -i include/internal/cryptlib.h
     sed '/install_docs:/s| install_html_docs||g' -i Configurations/unix-Makefile.tmpl
-    LDFLAGS='' ; LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    LDFLAGS=''; LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now -Wl,-rpath,\$$ORIGIN'; export LDFLAGS
     HASHBANGPERL=/usr/bin/perl
     ./Configure \
     --prefix=/usr \
@@ -270,10 +270,10 @@ _build_openssl34() {
     no-sm2 no-sm2-precomp no-sm3 no-sm4 \
     shared linux-x86_64 '-DDEVRANDOM="\"/dev/urandom\""'
     perl configdata.pm --dump
-    make -j$(nproc) all
-    rm -fr /tmp/openssl34
-    make DESTDIR=/tmp/openssl34 install_sw
-    cd /tmp/openssl34
+    make -j$(nproc --all) all
+    rm -fr /tmp/openssl35
+    make DESTDIR=/tmp/openssl35 install_sw
+    cd /tmp/openssl35
     # Only for debian/ubuntu
     mkdir -p usr/include/x86_64-linux-gnu/openssl
     chmod 0755 usr/include/x86_64-linux-gnu/openssl
@@ -284,12 +284,14 @@ _build_openssl34() {
     cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     rm -fr /usr/include/openssl
     rm -fr /usr/include/x86_64-linux-gnu/openssl
-    sleep 1
+    rm -fr /usr/local/openssl-1.1.1
+    rm -f /etc/ld.so.conf.d/openssl-1.1.1.conf
+    sleep 2
     /bin/cp -afr * /
-    sleep 1
+    sleep 2
     cd /tmp
     rm -fr "${_tmp_dir}"
-    rm -fr /tmp/openssl34
+    rm -fr /tmp/openssl35
     /sbin/ldconfig
 }
 
@@ -332,7 +334,8 @@ rm -fr /usr/lib/x86_64-linux-gnu/openssh/private
 _build_zlib
 _build_brotli
 _build_zstd
-_build_openssl33
+#_build_openssl33
+_build_openssl35
 _install_fido2
 
 LDFLAGS=''
