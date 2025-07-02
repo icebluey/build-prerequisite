@@ -21,6 +21,9 @@ cd "${_tmp_dir}"
 
 git clone "https://github.com/lz4/lz4.git"
 git clone "https://github.com/facebook/zstd.git"
+
+dnf reinstall -y wget ca-certificates
+
 _tar_ver="$(wget -qO- 'https://ftp.gnu.org/gnu/tar/' | grep -i 'href="tar-[1-9].*\.tar' | sed 's/"/\n/g' | grep -i '^tar-[1-9].*\.tar\.xz$' | sort -V | tail -n 1 | sed -e 's|tar-||g' -e 's|\.tar.*||g')"
 wget -c -t 0 -T 9 "https://ftp.gnu.org/gnu/tar/tar-${_tar_ver}.tar.xz"
 tar -xof "tar-${_tar_ver}.tar.xz"
