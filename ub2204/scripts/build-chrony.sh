@@ -390,30 +390,85 @@ sed -e 's|#\(driftfile\)|\1|' \
 -e 's|#\(keyfile\)|\1|' \
 -e 's|#\(leapsectz\)|\1|' \
 -e 's|#\(logdir\)|\1|' \
--e 's|#\(authselectmode\)|\1|' \
 -e 's|#\(ntsdumpdir\)|\1|' \
 -i etc/chrony/chrony.conf
+
+# -e 's|#\(authselectmode\)|\1|' \
 
 sed 's|/etc/chrony\.|/etc/chrony/chrony\.|g' -i etc/chrony/chrony.conf
 sed 's/^pool /#pool /g' -i etc/chrony/chrony.conf
 sed 's/^server/#server/g' -i etc/chrony/chrony.conf
 sed 's/^allow /#allow /g' -i etc/chrony/chrony.conf
-sed '5i# Use public NTS servers' -i etc/chrony/chrony.conf
-sed '6iserver time.cloudflare.com iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '7iserver gbg1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '8iserver gbg2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '9iserver lul1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '10iserver lul2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '11iserver mmo1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '12iserver mmo2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '13iserver sth1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '14iserver sth2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '15iserver svl1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '16iserver svl2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts' -i etc/chrony/chrony.conf
-sed '17i#server time1.google.com iburst minpoll 4 maxpoll 5' -i etc/chrony/chrony.conf
-sed '18i#server time2.google.com iburst minpoll 4 maxpoll 5' -i etc/chrony/chrony.conf
-sed '19i#server time3.google.com iburst minpoll 4 maxpoll 5' -i etc/chrony/chrony.conf
-sed '20i#server time4.google.com iburst minpoll 4 maxpoll 5\n' -i etc/chrony/chrony.conf
+
+sed '/^#pool /a\
+\n\# Cloudflare NTS servers\
+server time.cloudflare.com iburst minpoll 4 maxpoll 5 nts\
+\n\# Netnod NTS servers\
+server gbg1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server gbg2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server lul1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server lul2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server mmo1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server mmo2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server sth1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server sth2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server svl1.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+server svl2.nts.netnod.se iburst minpoll 4 maxpoll 5 nts\
+\n\# Google NTP servers\
+server time1.google.com iburst minpoll 4 maxpoll 5\
+server time2.google.com iburst minpoll 4 maxpoll 5\
+server time3.google.com iburst minpoll 4 maxpoll 5\
+server time4.google.com iburst minpoll 4 maxpoll 5\
+\n\# Apple NTP servers\
+server sgsin3-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server sgsin3-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server brsao4-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server brsao4-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server hkhkg1-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server hkhkg1-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server hkhkg1-ntp-003.aaplimg.com iburst minpoll 4 maxpoll 5\
+server ussjc2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server ussjc2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uslax1-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uslax1-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usnyc3-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usnyc3-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usnyc3-ntp-003.aaplimg.com iburst minpoll 4 maxpoll 5\
+server ausyd2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server ausyd2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usqas2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usqas2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server frcch1-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server frcch1-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uklon5-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uklon5-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uklon5-ntp-003.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usmia1-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usmia1-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usatl4-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usatl4-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server nlams2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server nlams2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server jptyo5-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server jptyo5-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server jptyo5-ntp-003.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usscz2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usscz2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server sesto4-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server sesto4-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server defra1-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server defra1-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server defra1-ntp-003.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usdal2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server usdal2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uschi5-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server uschi5-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server twtpe2-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server twtpe2-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server krsel6-ntp-001.aaplimg.com iburst minpoll 4 maxpoll 5\
+server krsel6-ntp-002.aaplimg.com iburst minpoll 4 maxpoll 5\
+server time.apple.com iburst minpoll 4 maxpoll 5
+' -i etc/chrony/chrony.conf
 
 sed 's|^#hwtimestamp|hwtimestamp|g' -i etc/chrony/chrony.conf
 
