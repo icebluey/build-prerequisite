@@ -113,13 +113,15 @@ for i in libgpg-error libassuan libksba npth ntbtls pinentry gpgme; do
     wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/${i}/${_tarname}"
 done
 
-_gnupg24_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/gnupg/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^gnupg-2\.4' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
-wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/gnupg/${_gnupg24_tarname}"
-
+#_gnupg24_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/gnupg/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^gnupg-2\.4' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
+#wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/gnupg/${_gnupg24_tarname}"
 #_gnupg23_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/gnupg/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^gnupg-2\.3' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
 #wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/gnupg/${_gnupg23_tarname}"
 #_gnupg22_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/gnupg/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^gnupg-2\.2' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
 #wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/gnupg/${_gnupg22_tarname}"
+
+_gnupg25_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/gnupg/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^gnupg-2\.5' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
+wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/gnupg/${_gnupg25_tarname}"
 
 _libgcrypt111_tarname="$(wget -qO- https://gnupg.org/ftp/gcrypt/libgcrypt/ | grep '\.tar\.bz2' | sed 's/href="/ /g' | sed 's/">/ /g' | sed 's/ /\n/g' | grep '^libgcrypt-1\.11' | sed -n '/\.tar\.bz2$/p' | sed -e '/-qt/d' | sort -V | uniq | tail -n 1)"
 wget -c -t 0 -T 9 "https://gnupg.org/ftp/gcrypt/libgcrypt/${_libgcrypt111_tarname}"
