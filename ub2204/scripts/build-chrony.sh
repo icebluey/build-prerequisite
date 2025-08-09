@@ -471,6 +471,7 @@ server time.apple.com iburst minpoll 4 maxpoll 5
 ' -i etc/chrony/chrony.conf
 
 sed 's|^#hwtimestamp|hwtimestamp|g' -i etc/chrony/chrony.conf
+sed 's|^authselectmode |#authselectmode |g' -i etc/chrony/chrony.conf
 
 echo 'ntsrefresh 300' >> etc/chrony/chrony.conf
 echo 'refresh 300' >> etc/chrony/chrony.conf
