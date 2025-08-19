@@ -334,11 +334,12 @@ cd "${_tmp_dir}"
 rm -fr pinentry-*
 ###############################################################################
 
+# --enable-gpg-is-gpg2 \
+
 cd gnupg-*
 ./configure \
 --build=x86_64-linux-gnu \
 --host=x86_64-linux-gnu \
---enable-gpg-is-gpg2 \
 --enable-wks-tools \
 --enable-g13 \
 --enable-build-timestamp \
@@ -354,8 +355,9 @@ cd gnupg-*
 make -j$(nproc --all) all
 
 # for v2.4.6
-sed 's|gpgv\.1|gpgv2.1|g' -i doc/Makefile
-sed 's|gpg\.1|gpg2.1|g' -i doc/Makefile
+# disable for 2.5
+#sed 's|gpgv\.1|gpgv2.1|g' -i doc/Makefile
+#sed 's|gpg\.1|gpg2.1|g' -i doc/Makefile
 
 rm -fr /tmp/gnupg
 make install DESTDIR=/tmp/gnupg
@@ -370,8 +372,8 @@ cd /tmp/gnupg
 install -m 0755 -d etc/gnupg
 install -m 0755 -d usr/lib/x86_64-linux-gnu/gnupg
 
-echo '# gpg2 ssh authenticate
-[[ -d ~/.gnupg ]] || ( gpg2 --list-secret-keys >/dev/null 2>&1 || : )
+echo '# gpg ssh authenticate
+[[ -d ~/.gnupg ]] || ( gpg --list-secret-keys >/dev/null 2>&1 || : )
 gpgconf --launch gpg-agent >/dev/null 2>&1
 export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 # fix "gpg: problem with the agent: Inappropriate ioctl for device"
@@ -408,7 +410,9 @@ no-symkey-cache
 charset utf-8
 require-cross-certification
 list-options show-uid-validity
-verify-options show-uid-validity' > etc/gnupg/gpg.conf
+verify-options show-uid-validity
+force-aead
+aead-algo ocb' > etc/gnupg/gpg.conf
 
 echo '#pinentry-program /usr/bin/pinentry-curses
 pinentry-timeout 300
@@ -430,8 +434,6 @@ chmod 0644 etc/gnupg/gpg.conf
 chmod 0644 etc/gnupg/gpg-agent.conf
 chmod 0644 etc/gnupg/.install.txt
 
-_gpg_ver="$(./usr/bin/gpg2 --version 2>&1 | grep -i '^gpg (GnuPG)' | awk '{print $3}')"
-
 _strip_files
 
 find /usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' \
@@ -451,11 +453,12 @@ if [[ -d usr/lib/gnupg ]]; then
 fi
 
 sleep 1
-ln -svf gpg2.1.gz usr/share/man/man1/gpg.1.gz
-ln -svf gpgv2.1.gz usr/share/man/man1/gpgv.1.gz
-ln -svf gpg2 usr/bin/gpg
-ln -svf gpgv2 usr/bin/gpgv
+ln -svf gpg.1.gz usr/share/man/man1/gpg2.1.gz
+ln -svf gpgv.1.gz usr/share/man/man1/gpgv2.1.gz
+ln -svf gpg usr/bin/gpg2
+ln -svf gpgv usr/bin/gpgv2
 [ -f usr/sbin/gpg-zip ] && mv -f usr/sbin/gpg-zip usr/bin/
+_gpg_ver="$(./usr/bin/gpg --version 2>&1 | grep -i '^gpg (GnuPG)' | awk '{print $3}')"
 echo
 sleep 2
 /bin/cp -afr * /
