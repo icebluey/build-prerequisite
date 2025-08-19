@@ -78,7 +78,7 @@ systemctl disable dnscrypt-proxy.service || :
 sleep 1
 rm -fr /etc/ssh /etc/dnscrypt-proxy /etc/chrony
 rm -fr /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
-rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private
+rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
 rm -fr /usr/lib/x86_64-linux-gnu/openssh/private /usr/lib/openssh
 
 
