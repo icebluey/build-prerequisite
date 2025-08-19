@@ -435,8 +435,6 @@ chmod 0644 etc/gnupg/gpg.conf
 chmod 0644 etc/gnupg/gpg-agent.conf
 chmod 0644 etc/gnupg/.install.txt
 
-_gpg_ver="$(./usr/bin/gpg --version 2>&1 | grep -i '^gpg (GnuPG)' | awk '{print $3}')"
-
 _strip_files
 
 find /usr/lib64/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' \
@@ -461,6 +459,7 @@ ln -svf gpgv.1.gz usr/share/man/man1/gpgv2.1.gz
 ln -svf gpg usr/bin/gpg2
 ln -svf gpgv usr/bin/gpgv2
 [ -f usr/sbin/gpg-zip ] && mv -f usr/sbin/gpg-zip usr/bin/
+_gpg_ver="$(./usr/bin/gpg --version 2>&1 | grep -i '^gpg (GnuPG)' | awk '{print $3}')"
 echo
 sleep 2
 /bin/cp -afr * /
