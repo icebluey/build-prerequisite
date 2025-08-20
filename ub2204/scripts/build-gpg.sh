@@ -420,6 +420,8 @@ default-cache-ttl 0
 max-cache-ttl 0
 enable-ssh-support' > etc/gnupg/gpg-agent.conf
 
+echo 'use-keyboxd' > etc/gnupg/common.conf
+
 echo '
 cd "$(dirname "$0")"
 rm -fr /etc/profile.d/load_gpg-agent.sh
@@ -432,6 +434,7 @@ echo '\''[[ -f /etc/gnupg/load_gpg-agent.sh ]] && source /etc/gnupg/load_gpg-age
 chmod 0644 etc/gnupg/load_gpg-agent.sh
 chmod 0644 etc/gnupg/gpg.conf
 chmod 0644 etc/gnupg/gpg-agent.conf
+chmod 0644 etc/gnupg/common.conf
 chmod 0644 etc/gnupg/.install.txt
 
 _strip_files
