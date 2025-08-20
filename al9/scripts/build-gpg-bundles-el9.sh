@@ -423,6 +423,9 @@ enable-ssh-support' > etc/gnupg/gpg-agent.conf
 
 echo 'use-keyboxd' > etc/gnupg/common.conf
 
+echo '#keyserver hkps://pgp.mit.edu
+keyserver hkps://keyserver.ubuntu.com' > etc/gnupg/dirmngr.conf
+
 echo '
 cd "$(dirname "$0")"
 rm -fr /etc/profile.d/load_gpg-agent.sh
@@ -436,6 +439,7 @@ chmod 0644 etc/gnupg/load_gpg-agent.sh
 chmod 0644 etc/gnupg/gpg.conf
 chmod 0644 etc/gnupg/gpg-agent.conf
 chmod 0644 etc/gnupg/common.conf
+chmod 0644 etc/gnupg/dirmngr.conf
 chmod 0644 etc/gnupg/.install.txt
 
 _strip_files
