@@ -421,7 +421,7 @@ default-cache-ttl 0
 max-cache-ttl 0
 enable-ssh-support' > etc/gnupg/gpg-agent.conf
 
-echo 'use-keyboxd' > etc/gnupg/common.conf
+#echo 'use-keyboxd' > etc/gnupg/common.conf
 
 echo '#keyserver hkps://pgp.mit.edu
 keyserver hkps://keyserver.ubuntu.com' > etc/gnupg/dirmngr.conf
@@ -438,7 +438,7 @@ echo '\''[[ -f /etc/gnupg/load_gpg-agent.sh ]] && source /etc/gnupg/load_gpg-age
 chmod 0644 etc/gnupg/load_gpg-agent.sh
 chmod 0644 etc/gnupg/gpg.conf
 chmod 0644 etc/gnupg/gpg-agent.conf
-chmod 0644 etc/gnupg/common.conf
+#chmod 0644 etc/gnupg/common.conf
 chmod 0644 etc/gnupg/dirmngr.conf
 chmod 0644 etc/gnupg/.install.txt
 
