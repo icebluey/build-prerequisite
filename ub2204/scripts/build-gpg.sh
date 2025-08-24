@@ -390,6 +390,8 @@ chown root:tty "$(tty)" >/dev/null 2>&1 || : ' > etc/gnupg/load_gpg-agent.sh
 
 echo '#keyserver hkps://pgp.mit.edu
 keyserver hkps://keyserver.ubuntu.com
+display-charset utf-8
+utf8-strings
 expert
 no-comments
 no-emit-version
@@ -408,7 +410,6 @@ disable-cipher-algo 3DES
 weak-digest SHA1
 s2k-cipher-algo AES256
 s2k-digest-algo SHA512
-charset utf-8
 require-cross-certification
 require-secmem
 list-options show-uid-validity
