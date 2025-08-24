@@ -394,6 +394,8 @@ keyserver hkps://keyserver.ubuntu.com
 expert
 no-comments
 no-emit-version
+no-greeting
+no-symkey-cache
 keyid-format 0xlong
 with-subkey-fingerprint
 personal-digest-preferences SHA512 SHA384 SHA256 SHA224
@@ -407,13 +409,12 @@ disable-cipher-algo 3DES
 weak-digest SHA1
 s2k-cipher-algo AES256
 s2k-digest-algo SHA512
-no-symkey-cache
 charset utf-8
 require-cross-certification
+require-secmem
 list-options show-uid-validity
 verify-options show-uid-validity
-force-aead
-aead-algo ocb' > etc/gnupg/gpg.conf
+force-ocb' > etc/gnupg/gpg.conf
 
 echo '#pinentry-program /usr/bin/pinentry-curses
 pinentry-timeout 300
