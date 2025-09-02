@@ -122,7 +122,7 @@ cp -pf etc/dnscrypt-proxy/dnscrypt-proxy.toml etc/dnscrypt-proxy/dnscrypt-proxy.
 sleep 1
 
 sed "s/^listen_addresses =.*/listen_addresses = \['127.0.0.1:53', '\[::1\]:53'\]/g" -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
-sed 's/^ipv6_servers = .*/ipv6_servers = false/g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
+sed 's/^ipv6_servers = .*/ipv6_servers = true/g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed '/^listen_addresses =/i #listen_addresses = \['\''0.0.0.0:53'\''\]' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
 sed 's/^fallback_resolvers/#&/g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
@@ -131,7 +131,7 @@ sed 's/^bootstrap_resolvers/#&/g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed "s/^netprobe_address =.*/netprobe_address = '1.1.1.1:443'/g" -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 #sed '/^# tls_cipher_suite =./atls_cipher_suite = \[4865, 4867, 49195, 49199\]' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed 's/^dnscrypt_servers =.*/dnscrypt_servers = false/g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
-sed "/^# server_names =/aserver_names = \['google', 'cloudflare'\]" -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
+sed "/^# server_names =/aserver_names = \['google', 'cloudflare', 'google-ipv6', 'cloudflare-ipv6'\]" -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed 's|^keepalive = .*|keepalive = 7200|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
 sed 's|^http3 = .*|http3 = true|g' -i etc/dnscrypt-proxy/dnscrypt-proxy.toml
@@ -192,8 +192,8 @@ Wants=network-online.target nss-lookup.target
 [Socket]
 ListenStream=127.0.0.1:53
 ListenDatagram=127.0.0.1:53
-#ListenStream=[::1]:53
-#ListenDatagram=[::1]:53
+ListenStream=[::1]:53
+ListenDatagram=[::1]:53
 NoDelay=true
 DeferAcceptSec=1
 
