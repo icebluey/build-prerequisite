@@ -210,6 +210,8 @@ install -v -c -m 0644 dnscrypt-proxy.service /lib/systemd/system/
 #install -v -c -m 0644 dnscrypt-proxy.socket /lib/systemd/system/
 systemctl daemon-reload >/dev/null 2>&1 || : 
 echo "nameserver 127.0.0.1" > /etc/resolv.conf
+sed '\''s|^algorithm =.*|algorithm = "ipcrypt-ndx"|g'\'' -i dnscrypt-proxy.toml
+sed "s|^key =.*|key = "\""$(openssl rand -hex 32)"\""|g" -i dnscrypt-proxy.toml
 ' > etc/dnscrypt-proxy/.install.txt
 
 ###############################################################################
