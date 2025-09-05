@@ -436,11 +436,10 @@ chmod 0644 etc/gnupg/dirmngr.conf
 chmod 0644 etc/gnupg/.install.txt
 
 _strip_files
-find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' strip '{}'
-find /usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' \
-    | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN' '{}'
+
 install -m 0755 -d usr/lib/x86_64-linux-gnu/gnupg
 cp -afr /"${_private_dir}" usr/lib/x86_64-linux-gnu/gnupg/
+
 if [[ -d usr/sbin ]]; then
     find usr/sbin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/gnupg/private' '{}'
 fi
@@ -448,8 +447,13 @@ if [[ -d usr/bin ]]; then
     find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/gnupg/private' '{}'
 fi
 if [[ -d usr/lib/gnupg ]]; then
+    find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' strip '{}'
     find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../../lib/x86_64-linux-gnu/gnupg/private' '{}'
 fi
+if [[ -d usr/lib/x86_64-linux-gnu/gnupg/private ]]; then
+    find usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN' '{}'
+fi
+
 sleep 1
 ln -svf gpg.1.gz usr/share/man/man1/gpg2.1.gz
 ln -svf gpgv.1.gz usr/share/man/man1/gpgv2.1.gz
