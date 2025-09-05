@@ -76,10 +76,10 @@ systemctl disable chronyd.service || :
 systemctl stop dnscrypt-proxy.service || : 
 systemctl disable dnscrypt-proxy.service || : 
 sleep 1
-rm -fr /etc/ssh /etc/dnscrypt-proxy /etc/chrony
-rm -fr /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
+rm -fr /etc/dnscrypt-proxy
+rm -fr /etc/chrony /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
 rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
-rm -fr /usr/lib/x86_64-linux-gnu/openssh/private /usr/lib/openssh
+rm -fr /etc/ssh /usr/lib/x86_64-linux-gnu/openssh/private /usr/lib/openssh
 
 
 #
@@ -107,12 +107,7 @@ cd /tmp
 sleep 1
 rm -fr /tmp/.tar.tmp
 
-echo
-cat /tmp/.done.txt
-echo
-rm -f /tmp/.done.txt
-
-sleep 2
+sleep 1
 _end_epoch="$(date -u +%s)"
 finishtime="$(echo ' Finish Time:  '"$(date -ud @"${_end_epoch}")")"
 _del_epoch=$((${_end_epoch} - ${_start_epoch}))
