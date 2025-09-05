@@ -15,15 +15,16 @@ jobs:
           sudo apt update -y -qqq
           sudo apt autoremove --purge -y needrestart || true
           sudo apt install -y bash wget
-          sudo ln -svf bash /bin/sh
+          sudo /bin/ln -svf bash /bin/sh
           sudo /bin/bash scripts/clean-os.sh
           sudo /bin/rm -fr /tmp/*
           sudo /bin/bash scripts/install-docker.sh
 
-      - name: Generate release tag env
+      - name: Build ub2204 prerequisite
         run: |
-          _release_ver="$(date -u +%Y-%m-%d-%H%M)"
-          echo "_release_ver=${_release_ver}" >> $GITHUB_ENV
+          sudo /bin/bash run-build-ub2204.sh
+          sudo /bin/systemctl stop docker.socket docker.service containerd.service
+          sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
 
       - name: Build al9 prerequisite
         run: |
@@ -31,11 +32,10 @@ jobs:
           sudo /bin/systemctl stop docker.socket docker.service containerd.service
           sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
 
-      - name: Build ub2204 prerequisite
+      - name: Generate release tag env
         run: |
-          sudo /bin/bash run-build-ub2204.sh
-          sudo /bin/systemctl stop docker.socket docker.service containerd.service
-          sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
+          _release_ver="$(date -u +%Y-%m-%d-%H%M)"
+          echo "_release_ver=${_release_ver}" >> $GITHUB_ENV
 
       - name: Upload files
         uses: softprops/action-gh-release@v2
