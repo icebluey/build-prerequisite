@@ -115,6 +115,10 @@ _build_sqlite() {
     /sbin/ldconfig
 }
 
+# backup orig sqlite
+mkdir /tmp/.sqlite.orig
+/bin/cp -af /usr/lib64/libsqlite3.* /tmp/.sqlite.orig/
+
 rm -fr /usr/lib64/gnupg/private
 _build_zlib
 _build_sqlite
@@ -471,8 +475,9 @@ rm -fr /tmp/gnupg
 cd /tmp
 rm -fr "${_tmp_dir}"
 
-dnf reinstall -y sqlite-libs
-rm -vf /usr/lib64/libsqlite3.so.3* /usr/lib64/libsqlite3.a
+if ls /tmp/.sqlite.orig/libsqlite3.* >/dev/null 2>&1; then /bin/cp -afv /tmp/.sqlite.orig/libsqlite3.* /usr/lib64/; fi
+sleep 1
+rm -fr /tmp/.sqlite.orig
 
 echo
 echo ' build gpg done'
