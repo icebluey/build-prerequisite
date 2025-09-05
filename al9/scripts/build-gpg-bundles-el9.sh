@@ -479,10 +479,5 @@ if ls /tmp/.sqlite.orig/libsqlite3.* >/dev/null 2>&1; then /bin/cp -afv /tmp/.sq
 sleep 1
 rm -fr /tmp/.sqlite.orig
 
-echo
-echo ' build gpg done'
-echo ' build gpg done' >> /tmp/.done.txt
-echo
 /sbin/ldconfig
 exit
-###############################################################################
