@@ -235,4 +235,7 @@ rm -fr /tmp/dnscrypt-proxy.socket
 rm -fr "${_tmp_dir}"
 rm -fr /usr/local/go
 rm -fr ~/.cache/go-build
+echo
+echo ' build dnscrypt-proxy done'
+echo
 exit
