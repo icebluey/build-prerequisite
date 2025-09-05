@@ -30,7 +30,7 @@ mv -f /tmp/dnscrypt-proxy*.tar.xz* /tmp/.tar.tmp/
 bash build-compress-el9.sh
 mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
-bash build-gpg-bundles-el9.sh
+bash build-gpg-bundle-el9.sh
 mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
 bash build-openssh-el9.sh
@@ -72,9 +72,9 @@ systemctl stop ssh-agent.service >/dev/null 2>&1 || :
 systemctl disable dnscrypt-proxy.service >/dev/null 2>&1 || : 
 systemctl stop dnscrypt-proxy.service >/dev/null 2>&1 || : 
 sleep 1
-rm -fr /etc/ssh /etc/dnscrypt-proxy
+rm -fr /etc/dnscrypt-proxy
 rm -fr /etc/gnupg /usr/lib64/gnupg/private
-rm -fr /usr/lib64/openssh/private /usr/libexec/openssh
+rm -fr /etc/ssh /usr/lib64/openssh/private /usr/libexec/openssh
 
 
 #
@@ -96,11 +96,6 @@ systemctl start dnscrypt-proxy.service
 cd /tmp
 sleep 1
 rm -fr /tmp/.tar.tmp
-
-echo
-cat /tmp/.done.txt
-echo
-rm -f /tmp/.done.txt
 
 sleep 2
 _end_epoch="$(date -u +%s)"
