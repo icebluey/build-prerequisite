@@ -471,8 +471,8 @@ rm -fr /tmp/gnupg
 cd /tmp
 rm -fr "${_tmp_dir}"
 
-rm -vf /usr/lib64/libsqlite3.a /usr/lib64/libsqlite3.so*
 dnf reinstall -y sqlite-libs
+rm -vf /usr/lib64/libsqlite3.so.3* /usr/lib64/libsqlite3.a
 
 echo
 echo ' build gpg done'
