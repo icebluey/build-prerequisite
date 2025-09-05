@@ -239,7 +239,5 @@ rm -fr ~/.cache/go-build
 sleep 2
 echo
 echo ' build dnscrypt-proxy done'
-echo ' build dnscrypt-proxy done' >> /tmp/.done.txt
 echo
-exit 0
-
+exit
