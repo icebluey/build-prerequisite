@@ -591,7 +591,5 @@ rm -f /tmp/gnutls*.tar*
 sleep 2
 echo
 echo ' build chrony done'
-echo ' build chrony done' >> /tmp/.done.txt
 echo
 exit
-
