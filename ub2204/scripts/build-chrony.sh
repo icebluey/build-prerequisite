@@ -244,8 +244,8 @@ _build_nettle() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    _nettle_ver=$(wget -qO- 'https://ftp.gnu.org/gnu/nettle/' | grep -i 'a href="nettle.*\.tar' | sed 's/"/\n/g' | grep -i '^nettle-.*tar.gz$' | sed -e 's|nettle-||g' -e 's|\.tar.*||g' | sort -V | uniq | tail -n 1)
-    wget -c -t 0 -T 9 "https://ftp.gnu.org/gnu/nettle/nettle-${_nettle_ver}.tar.gz"
+    _nettle_ver=$(wget -qO- 'https://www.lysator.liu.se/~nisse/archive/' | grep -o 'href='\''[^"]*\.tar\.gz'\''' | sed 's/href='\''//;s/'\''//' | grep '^nettle-[1-9]' | grep -ivE 'alpha|beta|rc' | sed 's/nettle-\(.*\)\.tar\.gz/\1/' | sort -V | tail -n1)
+    wget -c -t 0 -T 9 "https://www.lysator.liu.se/~nisse/archive/nettle-${_nettle_ver}.tar.gz"
     tar -xof nettle-*.tar*
     sleep 1
     rm -f nettle-*.tar*
@@ -255,7 +255,8 @@ _build_nettle() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu \
     --includedir=/usr/include --sysconfdir=/etc \
-    --enable-shared --enable-static --enable-fat
+    --enable-shared --enable-static --enable-fat \
+    --disable-openssl
     make -j$(nproc --all) all
     rm -fr /tmp/nettle
     make install DESTDIR=/tmp/nettle
