@@ -588,7 +588,6 @@ rm -f /tmp/nettle*.tar*
 rm -f /tmp/gnutls*.tar*
 
 /sbin/ldconfig
-sleep 2
 echo
 echo ' build chrony done'
 echo
