@@ -229,17 +229,10 @@ sleep 2
 ###############################################################################
 
 cd /tmp
-
 rm -fr /tmp/dnscrypt-proxy
 rm -fr /tmp/dnscrypt-proxy.service
 rm -fr /tmp/dnscrypt-proxy.socket
 rm -fr "${_tmp_dir}"
 rm -fr /usr/local/go
 rm -fr ~/.cache/go-build
-sleep 2
-echo
-echo ' build dnscrypt-proxy done'
-echo ' build dnscrypt-proxy done' >> /tmp/.done.txt
-echo
-exit 0
-
+exit
