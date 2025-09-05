@@ -50,7 +50,7 @@ sha256sum *.tar.xz > sha256sums.txt
 
 echo '
 /bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
-sleep 2
+sleep 1
 /sbin/ldconfig
 exit
 
@@ -97,7 +97,7 @@ cd /tmp
 sleep 1
 rm -fr /tmp/.tar.tmp
 
-sleep 2
+sleep 1
 _end_epoch="$(date -u +%s)"
 finishtime="$(echo ' Finish Time:  '"$(date -ud @"${_end_epoch}")")"
 _del_epoch=$((${_end_epoch} - ${_start_epoch}))
@@ -113,4 +113,3 @@ echo
 echo ' all done'
 echo
 exit
-
