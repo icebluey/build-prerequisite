@@ -151,7 +151,6 @@ rm -fr "${_tmp_dir}"
 sleep 2
 echo
 echo ' build compress done'
-echo ' build compress done' >> /tmp/.done.txt
 echo
 /sbin/ldconfig
 exit
