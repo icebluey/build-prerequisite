@@ -327,6 +327,13 @@ _pinentry_ver="$(usr/bin/pinentry --version 2>&1 | grep -i '^pinentry.*[0-9]$' |
 _strip_files
 sleep 1
 /bin/cp -afr * /
+sleep 1
+if [[ -d usr/sbin ]]; then
+    find usr/sbin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../lib64/gnupg/private' '{}'
+fi
+if [[ -d usr/bin ]]; then
+    find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../lib64/gnupg/private' '{}'
+fi
 echo
 sleep 1
 tar -Jcvf /tmp/"pinentry-${_pinentry_ver}-1.el9.x86_64.tar.xz" *
