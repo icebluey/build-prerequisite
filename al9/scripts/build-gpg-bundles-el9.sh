@@ -470,8 +470,8 @@ sleep 1
 cd /tmp
 rm -fr /tmp/gnupg
 /sbin/ldconfig
-
 ###############################################################################
+
 cd /tmp
 rm -fr "${_tmp_dir}"
 
@@ -480,4 +480,7 @@ sleep 1
 rm -fr /tmp/.sqlite.orig
 
 /sbin/ldconfig
+echo
+echo ' build gpg bundle done'
+echo
 exit
