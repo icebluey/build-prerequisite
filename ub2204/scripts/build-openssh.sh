@@ -637,11 +637,8 @@ sleep 2
 cd /tmp
 rm -fr "${_tmp_dir}"
 rm -fr /tmp/openssh
-sleep 2
+/sbin/ldconfig
 echo
 echo ' build openssh done'
-echo ' build openssh done' >> /tmp/.done.txt
 echo
-/sbin/ldconfig
 exit
-
