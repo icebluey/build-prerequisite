@@ -163,4 +163,7 @@ rm -fr /tmp/tar
 cd /tmp
 rm -fr "${_tmp_dir}"
 /sbin/ldconfig
+echo
+echo ' build compress done'
+echo
 exit
