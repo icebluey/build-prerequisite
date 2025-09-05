@@ -479,10 +479,8 @@ rm -fr "${_tmp_dir}"
 rm -vf /usr/lib/x86_64-linux-gnu/libsqlite3.a /usr/lib/x86_64-linux-gnu/libsqlite3.so*
 apt install -y --reinstall libsqlite3-dev libsqlite3-0
 
+/sbin/ldconfig
 echo
 echo ' build gpg done'
-echo ' build gpg done' >> /tmp/.done.txt
 echo
-/sbin/ldconfig
 exit
-###############################################################################
