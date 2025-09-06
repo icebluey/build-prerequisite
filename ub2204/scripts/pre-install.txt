@@ -38,9 +38,9 @@ apt install -y libedit-dev libssh2-1-dev libpam0g-dev libsystemd-dev groff-base
 apt install -y libsystemd-dev libcrypt-dev
 
 # run gpg bundle
-apt install -y libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6
+apt install -y libc6 libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6
 # build gpg bundle
-apt install -y libbz2-dev libncurses-dev libreadline-dev libldap2-dev libsqlite3-dev libusb-1.0-0-dev libsecret-1-dev
+apt install -y libc6 libbz2-dev libncurses-dev libreadline-dev libldap2-dev libsqlite3-dev libusb-1.0-0-dev libsecret-1-dev
 
 # run keepalived
 apt install -y libnl-3-200 libnl-genl-3-200 libsnmp-dev libnftnl11 libsystemd0
