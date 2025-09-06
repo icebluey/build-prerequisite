@@ -21,6 +21,7 @@ mkdir /tmp/.tar.tmp
 
 set -e
 
+if [[ -f /usr/local/sbin/unminimize ]]; then yes | /usr/local/sbin/unminimize; fi
 bash pre-install.txt
 
 bash build-dnscrypt-proxy.sh
