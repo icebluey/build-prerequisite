@@ -482,7 +482,7 @@ rm -fr /tmp/gnupg
 cd /tmp
 rm -fr "${_tmp_dir}"
 
-if ls /tmp/.sqlite.orig/libsqlite3.* >/dev/null 2>&1; then /bin/cp -afv /tmp/.sqlite.orig/libsqlite3.* /usr/lib64/; fi
+if ls /tmp/.sqlite.orig/libsqlite3.* >/dev/null 2>&1; then rm -vf /usr/lib64/libsqlite3.*; /bin/cp -afv /tmp/.sqlite.orig/libsqlite3.* /usr/lib64/; fi
 sleep 1
 rm -fr /tmp/.sqlite.orig
 
