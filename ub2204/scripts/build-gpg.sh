@@ -347,6 +347,13 @@ cd "${_tmp_dir}"
 rm -fr pinentry-*
 ###############################################################################
 
+# patch
+wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=a73c88817ce2dc05d4eefc2a8f31b89504523a9a' -O /tmp/p1.patch
+wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=6771ed4c13226ea8f410d022fa83888930070f70' -O /tmp/p2.patch
+patch -N -p1 -i /tmp/p1.patch
+patch -N -p1 -i /tmp/p2.patch
+rm -f /tmp/p*.patch
+
 cd gnupg-*
 ./configure \
 --build=x86_64-linux-gnu \
