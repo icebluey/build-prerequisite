@@ -78,9 +78,9 @@ yum install -y libcbor-devel || true
 yum install -y pcsc-lite-libs pcsc-lite-devel pcsc-lite pcsc-lite-ccid
 
 # run gpg bundle
-yum install -y bzip2-libs openldap readline ncurses-libs libusbx libsecret
+yum install -y glibc bzip2-libs openldap readline ncurses-libs libusbx libsecret
 # build gpg bundle
-yum install -y bzip2-devel openldap-devel readline-devel ncurses-devel libusbx-devel libsecret-devel
+yum install -y glibc-devel bzip2-devel openldap-devel readline-devel ncurses-devel libusbx-devel libsecret-devel
 
 if [ -e /etc/ssl/certs/ca-certificates.crt ] && [ ! -e /etc/ssl/cert.pem ]; then ln -sv certs/ca-certificates.crt /etc/ssl/cert.pem; fi
 if [ -e /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem ] && [ ! -e /etc/ssl/cert.pem ]; then ([ -e /etc/ssl ] || install -m 0755 -d /etc/ssl) && ln -sv /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/ssl/cert.pem; fi
