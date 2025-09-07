@@ -31,7 +31,8 @@ bash build-compress-el9.sh
 mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
 bash build-gpg-bundle-el9.sh
-mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
+mkdir /tmp/.tar.tmp/gpg-bundle
+mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/gpg-bundle/
 
 bash build-openssh-el9.sh
 mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
@@ -47,6 +48,12 @@ cd /tmp/bintar
 rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
+
+cd gpg-bundle
+rm -f sha256sums.txt
+rm -f *.sha256
+sha256sum *.tar.xz > sha256sums.txt
+cd ..
 
 echo '
 /bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
