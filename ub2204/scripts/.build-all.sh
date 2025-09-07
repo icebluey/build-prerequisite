@@ -32,9 +32,8 @@ bash build-compress.sh
 mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
 
 bash build-gpg.sh
-mkdir -p /tmp/.tar.tmp/gpg-bundle
+mkdir /tmp/.tar.tmp/gpg-bundle
 mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/gpg-bundle/
-
 
 bash build-openssh.sh
 mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
@@ -51,7 +50,10 @@ cd /tmp/bintar
 rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
+
 cd gpg-bundle
+rm -f sha256sums.txt
+rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
 cd ..
 
