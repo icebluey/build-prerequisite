@@ -420,7 +420,8 @@ require-secmem
 list-options show-uid-validity
 verify-options show-uid-validity
 force-ocb
-no-auto-key-upload' > etc/gnupg/gpg.conf
+no-auto-key-upload
+#trust-model tofu+pgp' > etc/gnupg/gpg.conf
 
 echo '#pinentry-program /usr/bin/pinentry-curses
 pinentry-timeout 300
