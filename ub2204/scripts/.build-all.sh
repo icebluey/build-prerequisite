@@ -55,19 +55,27 @@ cd gpg-bundle
 rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
+echo '
+gpgconf --kill all
+sleep 1
+pkill gpg-agent
+rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
+sleep 1
+/bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
+sleep 1
+/sbin/ldconfig
+bash /etc/gnupg/.install.txt
+' > .install-gpg-bundle.txt
 cd ..
 
 echo '
 /bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
-sleep 2
+sleep 1
 /sbin/ldconfig
 exit
 
 
 #
-gpgconf --kill all
-sleep 1
-pkill gpg-agent
 systemctl disable ssh.service || : 
 systemctl disable sshd.service || : 
 systemctl disable ssh.socket || : 
@@ -87,14 +95,12 @@ systemctl disable dnscrypt-proxy.service || :
 sleep 1
 rm -fr /etc/dnscrypt-proxy
 rm -fr /etc/chrony /usr/lib/x86_64-linux-gnu/chrony/private /var/lib/chrony
-rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
 rm -fr /etc/ssh /usr/lib/x86_64-linux-gnu/openssh/private /usr/lib/openssh
 
 
 #
 bash /etc/ssh/.install.txt
 bash /etc/dnscrypt-proxy/.install.txt
-bash /etc/gnupg/.install.txt
 bash /etc/chrony/.install.txt
 systemctl stop systemd-timesyncd >/dev/null 2>&1
 systemctl disable systemd-timesyncd >/dev/null 2>&1
