@@ -56,7 +56,7 @@ rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
 echo '
-gpgconf --kill all
+gpgconf --kill all >/dev/null || true
 sleep 1
 pkill gpg-agent
 rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
@@ -65,6 +65,7 @@ sleep 1
 sleep 1
 /sbin/ldconfig
 bash /etc/gnupg/.install.txt
+bash /etc/gnupg/load_gpg-agent.sh
 ' > .install-gpg-bundle.txt
 echo '
 apt install -y libc6 libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6 tar xz-utils
