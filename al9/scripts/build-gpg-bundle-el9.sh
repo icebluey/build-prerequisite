@@ -438,7 +438,6 @@ echo '
 cd "$(dirname "$0")"
 rm -fr /etc/profile.d/load_gpg-agent.sh
 sed -e '\''/\/etc\/gnupg\/load_gpg-agent.sh/d'\'' -i ~/.bashrc
-sleep 1
 install -c -m 0644 load_gpg-agent.sh /etc/profile.d/
 echo '\''[[ -f /etc/gnupg/load_gpg-agent.sh ]] && source /etc/gnupg/load_gpg-agent.sh'\'' >> ~/.bashrc
 ' > etc/gnupg/.install.txt
