@@ -64,6 +64,9 @@ sleep 1
 /sbin/ldconfig
 bash /etc/gnupg/.install.txt
 ' > .install-gpg-bundle.txt
+echo '
+yum install -y glibc bzip2-libs openldap readline ncurses-libs libusbx libsecret tar xz
+' > .dependencies.txt
 cd ..
 
 echo '
