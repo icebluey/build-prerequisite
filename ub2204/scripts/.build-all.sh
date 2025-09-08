@@ -66,6 +66,9 @@ sleep 1
 /sbin/ldconfig
 bash /etc/gnupg/.install.txt
 ' > .install-gpg-bundle.txt
+echo '
+apt install -y libc6 libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6 tar xz-utils
+' > .dependencies.txt
 cd ..
 
 echo '
