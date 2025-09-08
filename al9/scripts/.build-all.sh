@@ -53,6 +53,17 @@ cd gpg-bundle
 rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
+echo '
+gpgconf --kill all
+sleep 1
+pkill gpg-agent
+rm -fr /etc/gnupg /usr/lib64/gnupg/private
+sleep 1
+/bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
+sleep 1
+/sbin/ldconfig
+bash /etc/gnupg/.install.txt
+' > .install-gpg-bundle.txt
 cd ..
 
 echo '
@@ -63,9 +74,6 @@ exit
 
 
 #
-gpgconf --kill all
-sleep 1
-pkill gpg-agent
 systemctl disable ssh.service >/dev/null 2>&1 || : 
 systemctl disable sshd.service >/dev/null 2>&1 || : 
 systemctl disable ssh.socket >/dev/null 2>&1 || : 
@@ -80,14 +88,12 @@ systemctl disable dnscrypt-proxy.service >/dev/null 2>&1 || :
 systemctl stop dnscrypt-proxy.service >/dev/null 2>&1 || : 
 sleep 1
 rm -fr /etc/dnscrypt-proxy
-rm -fr /etc/gnupg /usr/lib64/gnupg/private
 rm -fr /etc/ssh /usr/lib64/openssh/private /usr/libexec/openssh
 
 
 #
 bash /etc/ssh/.install.txt
 bash /etc/dnscrypt-proxy/.install.txt
-bash /etc/gnupg/.install.txt
 systemctl daemon-reload >/dev/null 2>&1 || : 
 systemctl stop systemd-timesyncd >/dev/null 2>&1
 systemctl disable systemd-timesyncd >/dev/null 2>&1
