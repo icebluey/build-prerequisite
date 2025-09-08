@@ -56,9 +56,9 @@ rm -f sha256sums.txt
 rm -f *.sha256
 sha256sum *.tar.xz > sha256sums.txt
 echo '
-gpgconf --kill all >/dev/null || true
+gpgconf --kill all >/dev/null 2>&1 || true
 sleep 1
-pkill gpg-agent >/dev/null || true
+pkill gpg-agent >/dev/null 2>&1 || true
 rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
 sleep 1
 /bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
@@ -85,9 +85,9 @@ systemctl --user disable gpg-agent.service >/dev/null 2>&1
 systemctl --user disable gpg-agent.socket >/dev/null 2>&1
 systemctl --user disable dirmngr.service >/dev/null 2>&1
 systemctl --user disable dirmngr.socket >/dev/null 2>&1
-gpgconf --kill all >/dev/null || true
+gpgconf --kill all >/dev/null 2>&1 || true
 sleep 1
-pkill gpg-agent >/dev/null || true
+pkill gpg-agent >/dev/null 2>&1 || true
 rm -f /usr/lib/systemd/user/gpg-agent-browser.socket
 rm -f /usr/lib/systemd/user/gpg-agent-extra.socket
 rm -f /usr/lib/systemd/user/gpg-agent-ssh.socket
