@@ -58,7 +58,7 @@ sha256sum *.tar.xz > sha256sums.txt
 echo '
 gpgconf --kill all >/dev/null || true
 sleep 1
-pkill gpg-agent
+pkill gpg-agent >/dev/null || true
 rm -fr /etc/gnupg /usr/lib/x86_64-linux-gnu/gnupg/private /usr/lib/gnupg
 sleep 1
 /bin/ls -1 *.tar.xz | xargs -I '\''{}'\'' tar -xof '\''{}'\'' -C /
@@ -70,6 +70,33 @@ bash /etc/gnupg/load_gpg-agent.sh
 echo '
 apt install -y libc6 libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6 tar xz-utils
 ' > .dependencies.txt
+echo '
+systemctl --user stop gpg-agent-browser.socket >/dev/null 2>&1
+systemctl --user stop gpg-agent-extra.socket >/dev/null 2>&1
+systemctl --user stop gpg-agent-ssh.socket >/dev/null 2>&1
+systemctl --user stop gpg-agent.service >/dev/null 2>&1
+systemctl --user stop gpg-agent.socket >/dev/null 2>&1
+systemctl --user stop dirmngr.service >/dev/null 2>&1
+systemctl --user stop dirmngr.socket >/dev/null 2>&1
+systemctl --user disable gpg-agent-browser.socket >/dev/null 2>&1
+systemctl --user disable gpg-agent-extra.socket >/dev/null 2>&1
+systemctl --user disable gpg-agent-ssh.socket >/dev/null 2>&1
+systemctl --user disable gpg-agent.service >/dev/null 2>&1
+systemctl --user disable gpg-agent.socket >/dev/null 2>&1
+systemctl --user disable dirmngr.service >/dev/null 2>&1
+systemctl --user disable dirmngr.socket >/dev/null 2>&1
+gpgconf --kill all >/dev/null || true
+sleep 1
+pkill gpg-agent >/dev/null || true
+rm -f /usr/lib/systemd/user/gpg-agent-browser.socket
+rm -f /usr/lib/systemd/user/gpg-agent-extra.socket
+rm -f /usr/lib/systemd/user/gpg-agent-ssh.socket
+rm -f /usr/lib/systemd/user/gpg-agent.service
+rm -f /usr/lib/systemd/user/gpg-agent.socket
+rm -f /usr/lib/systemd/user/dirmngr.service
+rm -f /usr/lib/systemd/user/dirmngr.socket
+systemctl --user daemon-reload >/dev/null 2>&1
+' > .delete-gpg-agent-user-socket.txt
 cd ..
 
 echo '
