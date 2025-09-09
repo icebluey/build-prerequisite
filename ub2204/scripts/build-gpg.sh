@@ -412,7 +412,13 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES ZLIB BZIP2
 cipher-algo AES256
 digest-algo SHA512
 cert-digest-algo SHA512
+disable-cipher-algo IDEA
 disable-cipher-algo 3DES
+disable-cipher-algo CAST5
+disable-cipher-algo BLOWFISH
+disable-cipher-algo TWOFISH
+disable-pubkey-algo ELG
+disable-pubkey-algo DSA
 weak-digest SHA1
 s2k-cipher-algo AES256
 s2k-digest-algo SHA512
@@ -422,7 +428,7 @@ list-options show-uid-validity
 verify-options show-uid-validity
 force-ocb
 no-auto-key-upload
-#trust-model tofu+pgp' > etc/gnupg/gpg.conf
+trust-model tofu+pgp' > etc/gnupg/gpg.conf
 
 echo '#pinentry-program /usr/bin/pinentry-curses
 pinentry-timeout 300
