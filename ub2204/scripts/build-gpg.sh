@@ -29,11 +29,8 @@ _strip_files() {
     find usr/ -type f -iname '*.la' -delete
     if [[ -d usr/share/man ]]; then
         find -L usr/share/man/ -type l -exec rm -f '{}' \;
-        sleep 1
         find usr/share/man/ -type f -iname '*.[1-9]' -exec gzip -f -9 '{}' \;
-        sleep 1
         find -L usr/share/man/ -type l | while read file; do ln -sf "$(readlink -s "${file}").gz" "${file}.gz" ; done
-        sleep 1
         find -L usr/share/man/ -type l -exec rm -f '{}' \;
     fi
     for libroot in usr/lib/x86_64-linux-gnu usr/lib64; do
