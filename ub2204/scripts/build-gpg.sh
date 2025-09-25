@@ -349,8 +349,8 @@ cd gnupg-*
 # patch
 wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=a73c88817ce2dc05d4eefc2a8f31b89504523a9a' -O /tmp/p1.patch
 wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=6771ed4c13226ea8f410d022fa83888930070f70' -O /tmp/p2.patch
-patch -N -p1 -i /tmp/p1.patch
-patch -N -p1 -i /tmp/p2.patch
+wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=7101a06cb9149a080664da4f9d8a791a57a5b83e' -O /tmp/p3.patch
+ls -1 /tmp/p*.patch | xargs -I '{}' patch -N -p1 -i '{}'
 rm -f /tmp/p*.patch
 
 ./configure \
