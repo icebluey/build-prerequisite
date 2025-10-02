@@ -352,6 +352,7 @@ wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=7101a06cb91
 wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=600df5259db0b7be25a2e2b06c0c2d13265eceea;hp=a4bd829aa6755c1acd32d67d8336023e4e705675' -O /tmp/p04.patch
 wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=344353fbdd80779865170beda44eccb06bcdbd81;hp=600df5259db0b7be25a2e2b06c0c2d13265eceea' -O /tmp/p05.patch
 wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=a966c2ce90802f2fa953b04e69fdc529d61b6f53;hp=344353fbdd80779865170beda44eccb06bcdbd81' -O /tmp/p06.patch
+wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=f3b70a9352ae16a1ba2b12a7ee216f63ade1ead4' -O /tmp/p07.patch
 ls -1 /tmp/p*.patch | xargs -I '{}' patch -N -p1 -i '{}'
 rm -f /tmp/p*.patch
 
