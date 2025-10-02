@@ -14,8 +14,8 @@ _install_go () {
     # Latest version of go
     #_go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | tail -n 1)"
 
-    # go1.24.X
-    _go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | grep '^1\.24\.' | tail -n 1)"
+    # go1.25.X
+    _go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | grep '^1\.25\.' | tail -n 1)"
 
     wget -q -c -t 0 -T 9 "https://dl.google.com/go/go${_go_version}.linux-amd64.tar.gz"
     rm -fr /usr/local/go
@@ -50,11 +50,11 @@ sleep 2
 mkdir -p "${GOPATH}"/pkg
 cd "${_tmp_dir}"
 
-git clone "https://github.com/DNSCrypt/dnscrypt-proxy.git" "dnscrypt-proxy"
-#git clone "https://github.com/icebluey/dnscrypt-proxy.git" "dnscrypt-proxy"
-echo
-sleep 2
+git clone https://github.com/icebluey/dnscrypt-proxy.git "dnscrypt-proxy"
+#git clone "https://github.com/DNSCrypt/dnscrypt-proxy.git" "dnscrypt-proxy"
+
 cd dnscrypt-proxy
+go mod tidy
 
 _commit_id="$(git rev-parse --short HEAD)"
 #sed '/AppVersion .*=/s|-beta[1-9]||g' -i dnscrypt-proxy/main.go
@@ -62,14 +62,8 @@ sed "/AppVersion .*=/s|beta.*|git${_commit_id}\"|g" -i dnscrypt-proxy/main.go
 
 rm -fr .git
 cd dnscrypt-proxy
-
-#export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
-#export GOFLAGS="-trimpath -mod=readonly -modcacherw"
-export GOFLAGS="-trimpath -modcacherw"
-env CGO_ENABLED=0 go build -o "dnscrypt-proxy" -ldflags "-s -w"
-
-echo
-sleep 1
+mkdir build.tmp
+CGO_ENABLED=0 go build -o build.tmp/dnscrypt-proxy -trimpath -modcacherw -ldflags "-s -w"
 cd ..
 
 rm -fr /tmp/dnscrypt-proxy
@@ -85,7 +79,7 @@ install -m 0755 -d /tmp/dnscrypt-proxy/usr/share/dnscrypt-proxy/utils/generate-d
 install -m 0755 -d /tmp/dnscrypt-proxy/usr/share/doc/dnscrypt-proxy
 
 # executable
-install -vDm 0755 "dnscrypt-proxy/dnscrypt-proxy" -t "/tmp/dnscrypt-proxy/usr/bin/"
+install -v -m 0755 "dnscrypt-proxy/build.tmp/dnscrypt-proxy" "/tmp/dnscrypt-proxy/usr/bin/"
 # configuration
 install -vDm 0644 "dnscrypt-proxy/example-dnscrypt-proxy.toml" \
   "/tmp/dnscrypt-proxy/etc/dnscrypt-proxy/dnscrypt-proxy.toml"
