@@ -19,4 +19,11 @@ apt autoremove --purge -y ec2-hibinit-agent ec2-instance-connect hibagent
 echo
 snap list --all
 echo
+
+systemctl stop multipath-tools
+systemctl stop multipathd.socket
+systemctl disable multipath-tools
+systemctl disable multipathd.socket
+apt autoremove --purge -y multipath-tools
+
 exit
