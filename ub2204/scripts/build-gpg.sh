@@ -90,6 +90,7 @@ _build_sqlite() {
     cd sqlite-*
     #LDFLAGS='' ; LDFLAGS='-Wl,-z,relro -Wl,--as-needed -Wl,-z,now -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
     sed 's|http://|https://|g' -i configure shell.c sqlite3.1 sqlite3.c sqlite3.h sqlite3.rc
+    sed 's|^LDFLAGS.rpath = .*|LDFLAGS.rpath =|g' -i Makefile.in
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
@@ -468,7 +469,9 @@ if [[ -d usr/lib/gnupg ]]; then
     find usr/lib/gnupg/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN/../../lib/x86_64-linux-gnu/gnupg/private' '{}'
 fi
 if [[ -d usr/lib/x86_64-linux-gnu/gnupg/private ]]; then
-    find usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN' '{}'
+    find usr/lib/x86_64-linux-gnu/gnupg/private/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\): .*ELF.*, .*stripped.*/\1/p' | \
+      grep -vE 'libz\.so|libsqlite' | \
+      xargs --no-run-if-empty -I '{}' patchelf --force-rpath --add-rpath '$ORIGIN' '{}'
 fi
 
 sleep 1
