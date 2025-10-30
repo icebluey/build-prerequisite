@@ -349,9 +349,9 @@ cd gnupg-*
 
 # patch
 rm -f /tmp/p*.patch
-wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=115d138ba599328005c5321c0ef9f00355838ca9' -O /tmp/p01.patch
-wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=6570700fddcb92ce08024a651dd6989025fe9e20' -O /tmp/p02.patch
-wget 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=ad0c6c33c3d6fe7ff7cc8c2e73d02ead5788e5b3' -O /tmp/p03.patch
+wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=115d138ba599328005c5321c0ef9f00355838ca9' -O /tmp/p01.patch
+wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=6570700fddcb92ce08024a651dd6989025fe9e20' -O /tmp/p02.patch
+wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=ad0c6c33c3d6fe7ff7cc8c2e73d02ead5788e5b3' -O /tmp/p03.patch
 ls -1 /tmp/p*.patch | xargs -I '{}' patch -N -p1 -i '{}'
 rm -f /tmp/p*.patch
 
