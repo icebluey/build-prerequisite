@@ -549,10 +549,11 @@ mkdir -p /var/log/chrony
 mkdir -p /var/lib/chrony
 touch /var/lib/chrony/{drift,rtc}
 /bin/systemctl daemon-reload >/dev/null 2>&1 || : 
+if [ -f /etc/apparmor.d/usr.sbin.chronyd ]; then sed '\''/run/s|/chrony/{\,\*}|/chrony/{\,\*\*}|g'\'' -i /etc/apparmor.d/usr.sbin.chronyd; fi
 ' > etc/chrony/.install.txt
 
-patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/sbin/chronyd
-patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/bin/chronyc
+patchelf --force-rpath --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/sbin/chronyd
+patchelf --force-rpath --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/chrony/private' usr/bin/chronyc
 
 chown -R root:root ./
 echo
