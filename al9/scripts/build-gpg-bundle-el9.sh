@@ -347,14 +347,10 @@ rm -fr pinentry-*
 cd gnupg-*
 
 # patch
-rm -f /tmp/p*.patch
-wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=115d138ba599328005c5321c0ef9f00355838ca9' -O /tmp/p01.patch
-wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=6570700fddcb92ce08024a651dd6989025fe9e20' -O /tmp/p02.patch
-wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=ad0c6c33c3d6fe7ff7cc8c2e73d02ead5788e5b3' -O /tmp/p03.patch
-wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=8b44256a55496d598f5b903377ccc0100bc87812' -O /tmp/p04.patch
-wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=c7e0ec12609b401ea81c4851522d86eb5ec27170' -O /tmp/p05.patch
-ls -1 /tmp/p*.patch | xargs -I '{}' patch -N -p1 -i '{}'
-rm -f /tmp/p*.patch
+#rm -f /tmp/p*.patch
+#wget -c -t 9 -T 9 'https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=patch;h=115d138ba599328005c5321c0ef9f00355838ca9' -O /tmp/p01.patch
+#ls -1 /tmp/p*.patch | xargs -I '{}' patch -N -p1 -i '{}'
+#rm -f /tmp/p*.patch
 
 ./configure \
 --build=x86_64-linux-gnu \
