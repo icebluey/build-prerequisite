@@ -1,7 +1,7 @@
 set -e
 _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
-wget -c -t 9 -T 9 'https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64'
+wget -c -t 9 -T 9 'https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64'
 sleep 1
 mv jq-linux-amd64 jq
 rm -f /usr/bin/jq
