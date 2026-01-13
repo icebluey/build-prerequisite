@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install docker
         run: |
           sudo apt update -y -qqq
@@ -46,4 +46,5 @@ jobs:
       - name: Delete old release tag env
         run: |
           sed -e "/^_release_ver=/d" -i $GITHUB_ENV
+          sudo rm -fr /tmp/_output_assets
 
