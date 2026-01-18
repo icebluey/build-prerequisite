@@ -62,7 +62,7 @@ sed "/AppVersion .*=/s|beta.*|git${_commit_id}\"|g" -i dnscrypt-proxy/main.go
 rm -fr .git
 cd dnscrypt-proxy
 mkdir build.tmp
-CGO_ENABLED=0 go build -o build.tmp/dnscrypt-proxy -trimpath -modcacherw -ldflags "-s -w"
+CGO_ENABLED=0 GOARCH=amd64 GOAMD64=v3 go build -o build.tmp/dnscrypt-proxy -trimpath -mod=mod -modcacherw -ldflags "-s -w"
 cd ..
 
 rm -fr /tmp/dnscrypt-proxy
