@@ -52,6 +52,8 @@ git clone https://github.com/icebluey/dnscrypt-proxy.git "dnscrypt-proxy"
 
 cd dnscrypt-proxy
 go mod tidy
+rm -fr vendor
+go mod vendor
 
 _commit_id="$(git rev-parse --short HEAD)"
 #sed '/AppVersion .*=/s|-beta[1-9]||g' -i dnscrypt-proxy/main.go
@@ -60,7 +62,7 @@ sed "/AppVersion .*=/s|beta.*|git${_commit_id}\"|g" -i dnscrypt-proxy/main.go
 rm -fr .git
 cd dnscrypt-proxy
 mkdir build.tmp
-CGO_ENABLED=0 go build -o build.tmp/dnscrypt-proxy -trimpath -modcacherw -ldflags "-s -w"
+CGO_ENABLED=0 GOARCH=amd64 GOAMD64=v3 go build -o build.tmp/dnscrypt-proxy -trimpath -mod=mod -modcacherw -ldflags "-s -w"
 cd ..
 
 rm -fr /tmp/dnscrypt-proxy
