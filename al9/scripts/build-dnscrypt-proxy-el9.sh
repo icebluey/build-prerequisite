@@ -52,6 +52,8 @@ git clone https://github.com/icebluey/dnscrypt-proxy.git "dnscrypt-proxy"
 
 cd dnscrypt-proxy
 go mod tidy
+rm -fr vendor
+go mod vendor
 
 _commit_id="$(git rev-parse --short HEAD)"
 #sed '/AppVersion .*=/s|-beta[1-9]||g' -i dnscrypt-proxy/main.go
