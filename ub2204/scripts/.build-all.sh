@@ -38,8 +38,8 @@ mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/gpg-bundle/
 bash build-openssh.sh
 mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
 
-bash build-chrony.sh
-mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
+#bash build-chrony.sh
+#mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
 
 cp -pf pre-install.txt /tmp/.tar.tmp/requirements.txt
 cp -pfr ../config /tmp/.tar.tmp/.config
