@@ -52,8 +52,9 @@ _build_zlib() {
     set -e
     local _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    _zlib_ver="$(wget -qO- 'https://www.zlib.net/' | grep 'zlib-[1-9].*\.tar\.' | sed -e 's|"|\n|g' | grep '^zlib-[1-9]' | sed -e 's|\.tar.*||g' -e 's|zlib-||g' | sort -V | uniq | tail -n 1)"
-    wget -c -t 9 -T 9 "https://www.zlib.net/zlib-${_zlib_ver}.tar.gz"
+    #_zlib_ver="$(wget -qO- 'https://www.zlib.net/' | grep -io 'href="[^"]*\.tar\.gz"' | sed 's/href="//I;s/"//' | grep -i '^zlib-[0-9]' | sed 's/zlib-\(.*\)\.tar\.gz/\1/' | sort -V | tail -n1)"
+    #wget -c -t 9 -T 9 "https://www.zlib.net/zlib-${_zlib_ver}.tar.gz"
+    wget -c -t 9 -T 9 https://www.zlib.net/zlib-1.3.2.tar.gz
     tar -xof zlib-*.tar.*
     sleep 1
     rm -f zlib-*.tar*
