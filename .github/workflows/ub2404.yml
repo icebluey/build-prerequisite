@@ -1,0 +1,39 @@
+name: ub2404
+on:
+  #push:
+  #  branches: [ "master" ]
+  #pull_request:
+  #  branches: [ "master" ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install docker
+        run: |
+          sudo apt update -y -qqq
+          sudo apt autoremove --purge -y needrestart || true
+          sudo apt install -y bash wget
+          sudo /bin/ln -svf bash /bin/sh
+          sudo /bin/bash scripts/clean-os.sh
+          sudo /bin/rm -fr /tmp/*
+          sudo /bin/bash scripts/install-docker.sh
+
+      - name: Build ub2404 prerequisite
+        run: |
+          sudo /bin/bash run-build-ub2404.sh
+          sudo /bin/systemctl stop docker.socket docker.service containerd.service
+          sudo /bin/rm -fr /var/lib/docker/* /var/lib/containerd/* /mnt/docker-data/*
+
+      - name: Generate release tag env
+        run: |
+          _release_ver="$(date -u +%Y-%m-%d)"
+          echo "_release_ver=${_release_ver}" >> $GITHUB_ENV
+
+      - name: Upload files
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env._release_ver }}
+          files: /tmp/_output_assets/ub2404*
+

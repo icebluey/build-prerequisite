@@ -1,0 +1,39 @@
+
+# openssh
+apt-mark hold openssh-client
+apt-mark hold openssh-server
+apt-mark hold openssh-sftp-server
+
+# gnupg
+apt-mark hold gnupg2
+apt-mark hold dirmngr
+apt-mark hold gnupg
+apt-mark hold gnupg-l10n
+apt-mark hold gnupg-utils
+apt-mark hold gpg
+apt-mark hold gpg-agent
+apt-mark hold gpg-wks-client
+apt-mark hold gpg-wks-server
+apt-mark hold gpgconf
+apt-mark hold gpgsm
+apt-mark hold gpgv
+apt-mark hold libgcrypt20-dev
+apt-mark hold libgcrypt20
+apt-mark hold libgpg-error-dev
+apt-mark hold libgpg-error0
+apt-mark hold libgpgme11
+apt-mark hold libassuan0
+apt-mark hold pinentry-curses
+
+# compress
+apt-mark hold zstd
+apt-mark hold libzstd-dev:amd64
+apt-mark hold libzstd1:amd64
+apt-mark hold lz4
+apt-mark hold liblz4-tool
+apt-mark hold liblz4-dev
+apt-mark hold liblz4-1:amd64
+apt-mark hold tar
+
+apt-mark hold chrony
+

@@ -1,0 +1,9 @@
+
+echo '#!/bin/bash' > /etc/rc.local
+echo "tc qdisc replace dev $(ip addr | grep -i qdisc | grep -i 'state up' | grep -iv 'lo:' | awk -F : '{print $2}' | sed 's| *||g') root fq_pie &" >> /etc/rc.local
+echo 'exit 0' >> /etc/rc.local
+chmod 0755 /etc/rc.local
+systemctl enable rc-local.service
+echo
+echo
+systemctl status rc-local.service
