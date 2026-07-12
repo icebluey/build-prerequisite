@@ -68,7 +68,7 @@ bash /etc/gnupg/.install.txt
 bash /etc/gnupg/load_gpg-agent.sh
 ' > .install-gpg-bundle.txt
 echo '
-apt install -y libc6 libbz2-1.0 libldap-2.5-0 libreadline8 libusb-1.0-0 libglib2.0-0 libncursesw6 libsecret-1-0 libtinfo6 tar xz-utils
+apt install -y libc6 libbz2-1.0 libglib2.0-0t64 libldap2 libncursesw6 libreadline8t64 libtinfo6 libusb-1.0-0 libsecret-1-0 tar xz-utils
 ' > .dependencies.txt
 echo '
 systemctl --user stop gpg-agent-browser.socket >/dev/null 2>&1
