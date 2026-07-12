@@ -59,6 +59,7 @@ _build_zlib() {
     cd "${_tmp_dir}"
     #_zlib_ver="$(wget -qO- 'https://www.zlib.net/' | grep -io 'href="[^"]*\.tar\.gz"' | sed 's/href="//I;s/"//' | grep -i '^zlib-[0-9]' | sed 's/zlib-\(.*\)\.tar\.gz/\1/' | sort -V | tail -n1)"
     #wget -c -t 9 -T 9 "https://www.zlib.net/zlib-${_zlib_ver}.tar.gz"
+    _zlib_ver="$(wget -qO- 'https://github.com/madler/zlib/releases' | grep -i 'zlib/releases/tag/v' | sed 's|"|\n|g' | grep -i 'zlib/releases/tag/v' | sed 's|.*[Vv]||g' | sort -V | tail -n 1)"
     wget -c -t 9 -T 9 "https://github.com/madler/zlib/releases/download/v${_zlib_ver}/zlib-${_zlib_ver}.tar.gz"
     tar -xof zlib-*.tar.*
     sleep 1
