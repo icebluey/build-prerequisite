@@ -20,7 +20,7 @@ _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
 
 git clone "https://github.com/lz4/lz4.git"
-git clone "https://github.com/facebook/zstd.git"
+git clone https://github.com/meta/zstd.git
 
 dnf reinstall -y wget ca-certificates
 
@@ -87,8 +87,8 @@ sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib64|g' -i programs/Makefile
 sleep 1
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C lib lib-mt
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C programs
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C contrib/pzstd
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C programs HAVE_LZ4=0
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C contrib/pzstd HAVE_LZ4=0
 rm -fr /tmp/zstd
 rm -fr /tmp/zstd*.tar*
 make install DESTDIR=/tmp/zstd
