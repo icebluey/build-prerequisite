@@ -20,7 +20,7 @@ _tmp_dir="$(mktemp -d)"
 cd "${_tmp_dir}"
 
 git clone "https://github.com/lz4/lz4.git"
-git clone "https://github.com/facebook/zstd.git"
+git clone https://github.com/meta/zstd.git
 _tar_ver="$(wget -qO- 'https://mirrors.ocf.berkeley.edu/gnu/tar/' | grep -o 'href="[^"]*\.tar\.xz"' | sed 's/href="//;s/"//' | sed 's/tar-\(.*\)\.tar\.xz/\1/' | grep '^[1-9]' | sort -V | tail -n 1)"
 wget -c -t 9 -T 9 "https://mirrors.ocf.berkeley.edu/gnu/tar/tar-${_tar_ver}.tar.xz"
 tar -xof "tar-${_tar_ver}.tar.xz"
@@ -82,8 +82,8 @@ sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
 sleep 1
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C lib lib-mt
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C contrib/pzstd
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C programs HAVE_LZ4=0
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu -C contrib/pzstd HAVE_LZ4=0
 rm -fr /tmp/zstd
 rm -fr /tmp/zstd*.tar*
 make install DESTDIR=/tmp/zstd
