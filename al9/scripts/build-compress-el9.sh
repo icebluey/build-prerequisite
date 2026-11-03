@@ -86,7 +86,7 @@ sed '/^PREFIX/s|= .*|= /usr|g' -i programs/Makefile
 sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
 #sed '/^libdir/s|= .*|= /usr/lib64|g' -i programs/Makefile
 sleep 1
-make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C lib lib-mt
+make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C lib lib-mt HAVE_LZ4=0
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C programs HAVE_LZ4=0
 make -j$(nproc --all) V=1 prefix=/usr libdir=/usr/lib64 -C contrib/pzstd HAVE_LZ4=0
 rm -fr /tmp/zstd
