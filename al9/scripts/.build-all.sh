@@ -27,8 +27,8 @@ bash pre-install.txt
 bash build-dnscrypt-proxy-el9.sh
 mv -f /tmp/dnscrypt-proxy*.tar.xz* /tmp/.tar.tmp/
 
-bash build-compress-el9.sh
-mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
+#bash build-compress-el9.sh
+#mv -f /tmp/*.el9.x86_64.tar.xz* /tmp/.tar.tmp/
 
 bash build-gpg-bundle-el9.sh
 mkdir /tmp/.tar.tmp/gpg-bundle
