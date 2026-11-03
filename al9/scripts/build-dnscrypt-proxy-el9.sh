@@ -14,8 +14,8 @@ _install_go () {
     # Latest version of go
     #_go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | tail -n 1)"
 
-    # go1.26.X
-    _go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | grep '^1\.26\.' | tail -n 1)"
+    # go1.27.X
+    _go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | grep '^1\.27\.' | tail -n 1)"
     wget -q -c -t 0 -T 9 "https://dl.google.com/go/go${_go_version}.linux-amd64.tar.gz"
     rm -fr /usr/local/go
     mkdir /usr/local/go
@@ -47,8 +47,8 @@ sleep 2
 mkdir -p "${GOPATH}"/pkg
 cd "${_tmp_dir}"
 
-git clone https://github.com/icebluey/dnscrypt-proxy.git "dnscrypt-proxy"
-#git clone "https://github.com/DNSCrypt/dnscrypt-proxy.git" "dnscrypt-proxy"
+#git clone https://github.com/icebluey/dnscrypt-proxy.git "dnscrypt-proxy"
+git clone "https://github.com/DNSCrypt/dnscrypt-proxy.git" "dnscrypt-proxy"
 
 cd dnscrypt-proxy
 go mod tidy
