@@ -28,8 +28,8 @@ bash pre-install.txt
 bash build-dnscrypt-proxy.sh
 mv -f /tmp/dnscrypt-proxy*.tar.xz* /tmp/.tar.tmp/
 
-bash build-compress.sh
-mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
+#bash build-compress.sh
+#mv -f /tmp/*_amd64.tar.xz* /tmp/.tar.tmp/
 
 bash build-gpg.sh
 mkdir /tmp/.tar.tmp/gpg-bundle
