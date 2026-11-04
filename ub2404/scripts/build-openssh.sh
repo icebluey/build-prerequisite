@@ -592,6 +592,7 @@ rm -fr /etc/ssh/ssh_host_*
 #/usr/bin/ssh-keygen -q -a 200 -t dsa -E sha512 -f /etc/ssh/ssh_host_dsa_key -N "" -C ""
 /usr/bin/ssh-keygen -q -a 200 -t ecdsa -b 521 -E sha512 -f /etc/ssh/ssh_host_ecdsa_key -N "" -C ""
 /usr/bin/ssh-keygen -q -a 200 -t ed25519 -E sha512 -f /etc/ssh/ssh_host_ed25519_key -N "" -C ""
+/usr/bin/ssh-keygen -q -a 200 -t mldsa44-ed25519 -E sha512 -f /etc/ssh/ssh_host_mldsa44_ed25519_key -N "" -C ""
 rm -fr /lib/systemd/system/ssh.service
 rm -fr /lib/systemd/system/sshd.service
 rm -fr /lib/systemd/system/ssh*.service
@@ -609,6 +610,7 @@ usr/bin/ssh-keygen -q -a 200 -t rsa -b 5120 -E sha512 -f etc/ssh/ssh_host_rsa_ke
 #usr/bin/ssh-keygen -q -a 200 -t dsa -E sha512 -f etc/ssh/ssh_host_dsa_key -N "" -C ""
 usr/bin/ssh-keygen -q -a 200 -t ecdsa -b 521 -E sha512 -f etc/ssh/ssh_host_ecdsa_key -N "" -C ""
 usr/bin/ssh-keygen -q -a 200 -t ed25519 -E sha512 -f etc/ssh/ssh_host_ed25519_key -N "" -C ""
+usr/bin/ssh-keygen -q -a 200 -t mldsa44-ed25519 -E sha512 -f /etc/ssh/ssh_host_mldsa44_ed25519_key -N "" -C ""
 
 if [[ -d usr/sbin ]]; then
     find usr/sbin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, .*stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/openssh/private' '{}'
